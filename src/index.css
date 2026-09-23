@@ -1,0 +1,431 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: "Archivo:Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://static.figma.com/font/Archivo_wdth_wght__1") format("woff2");
+}
+
+@font-face {
+  font-family: "Archivo:ExtraLight";
+  font-style: normal;
+  font-weight: 200;
+  src: url("https://static.figma.com/font/Archivo_wdth_wght__1") format("woff2");
+}
+
+@font-face {
+  font-family: "Archivo:Bold";
+  font-style: normal;
+  font-weight: 700;
+  src: url("https://static.figma.com/font/Archivo_wdth_wght__1") format("woff2");
+}
+
+@font-face {
+  font-family: "Archivo:SemiBold";
+  font-style: normal;
+  font-weight: 600;
+  src: url("https://static.figma.com/font/Archivo_wdth_wght__1") format("woff2");
+}
+
+@font-face {
+  font-family: "Ancizar Sans:Thin";
+  font-style: normal;
+  font-weight: 100;
+  src: url("https://static.figma.com/font/AncizarSans_wght__1") format("woff2");
+}
+
+@font-face {
+  font-family: "Lato:Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://static.figma.com/font/Lato-Regular_1") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto:Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://static.figma.com/font/Roboto_wdth_wght__3") format("woff2");
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scroll animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+
+/* Hero text animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.hero-title { animation: slideInLeft 0.8s ease forwards; }
+.hero-sub { animation: fadeInUp 0.8s ease 0.2s both; }
+.hero-cta { animation: fadeInUp 0.8s ease 0.4s both; }
+.hero-img { animation: fadeInUp 0.9s ease 0.2s both; }
+
+/* Slider */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Mobile menu */
+.mobile-menu-enter {
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Innovation text scroll */
+@keyframes scrollText {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.innovation-scroll {
+  animation: scrollText 20s linear infinite;
+  white-space: nowrap;
+}
+
+/* Acreditaciones logo marquee — slow, continuous, single line */
+.seals-scroll {
+  animation: scrollText 32s linear infinite;
+  width: max-content;
+}
+.seals-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Oferta Academica — text roller keyframes (softer: 55% travel + opacity) */
+@keyframes oferta-prev {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(-55%); opacity: 0; }
+}
+@keyframes oferta-next {
+  from { transform: translateY(0);   opacity: 1; }
+  to   { transform: translateY(55%); opacity: 0; }
+}
+@keyframes oferta-currentUp {
+  from { transform: translateY(55%); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+@keyframes oferta-currentDown {
+  from { transform: translateY(-55%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Oferta Academica — background zoom entry */
+@keyframes oferta-bgEnter {
+  from { opacity: 0; transform: scale(1.1); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Oferta Academica — cards slide-in on mount */
+@keyframes oferta-cardsIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Testimonios — sticky scroll-driven carousel ─────────────────────────
+   Ported from the CEIPA reference HTML. `.test-track` is a tall rail: while
+   scrolling through it, `.test-sticky` stays pinned and the active testimonial
+   advances with scroll progress. If the content doesn't fit one screen
+   (`#testimonios.is-static`, set from React), it degrades to a plain static list. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+#testimonios { --test-count: 3; --test-step: 70; }
+
+#testimonios .test-track {
+  position: relative;
+  height: calc(100vh + (var(--test-count) - 1) * var(--test-step) * 1vh);
+}
+@supports (height: 100svh) {
+  #testimonios .test-track {
+    height: calc(100svh + (var(--test-count) - 1) * var(--test-step) * 1svh);
+  }
+}
+
+#testimonios .test-sticky {
+  position: sticky; top: 0;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 104px 24px 56px;
+}
+@supports (min-height: 100svh) { #testimonios .test-sticky { min-height: 100svh; } }
+
+#testimonios .testimonios-wrap {
+  width: 100%; max-width: 1440px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 32px;
+}
+#testimonios .testimonios-left { flex-shrink: 0; max-width: 440px; }
+
+#testimonios .section-title {
+  font-family: "Archivo:Bold", sans-serif;
+  font-size: 52px; font-weight: 700; color: #354ee7;
+  line-height: .83; margin-bottom: 16px;
+}
+#testimonios .section-desc {
+  font-family: "Archivo:ExtraLight", sans-serif;
+  font-size: 18px; font-weight: 200; line-height: 1.44; color: #111; max-width: 400px;
+}
+
+#testimonios .test-counter {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-top: 24px;
+  font-size: 15px; font-weight: 600; color: #354ee7;
+  font-variant-numeric: tabular-nums;
+}
+#testimonios .test-counter-sep { opacity: .4; font-weight: 400; }
+
+#testimonios .test-dots { display: flex; gap: 12px; margin-top: 12px; }
+#testimonios .test-dot {
+  position: relative;
+  width: 16px; height: 44px;
+  padding: 0; border: none; background: none;
+  border-radius: 6px; cursor: pointer;
+  transition: width .35s ease;
+}
+#testimonios .test-dot::before {
+  content: ''; position: absolute; inset-inline: 0; top: 50%;
+  height: 4px; margin-top: -2px; border-radius: 4px;
+  background: rgba(53,78,231,.3);
+  transition: background .35s ease;
+}
+#testimonios .test-dot:hover::before { background: rgba(53,78,231,.55); }
+#testimonios .test-dot.is-active { width: 40px; }
+#testimonios .test-dot.is-active::before { background: #354ee7; }
+#testimonios .test-dot:focus-visible { outline: 2px solid #354ee7; outline-offset: 3px; }
+
+#testimonios .test-hint {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 16px; font-size: 13px; font-weight: 400; color: #6b6b7b;
+  transition: opacity .4s ease;
+}
+#testimonios .test-hint svg { animation: hintBounce 1.8s ease-in-out infinite; }
+#testimonios .test-hint.is-done { opacity: 0; }
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+
+#testimonios .testimonios-list { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+#testimonios .test-card {
+  position: relative;
+  background: #d9d9d9; border-radius: 16px;
+  padding: 18px 20px; display: flex; align-items: center;
+  gap: 16px; cursor: pointer;
+  opacity: .55;
+  transform: scale(.97);
+  box-shadow: 0 0 0 rgba(19,34,55,0);
+  transition: opacity .45s ease, transform .45s ease,
+              background .45s ease, box-shadow .45s ease;
+}
+#testimonios .test-card:hover { opacity: .8; }
+#testimonios .test-card.is-active {
+  opacity: 1;
+  transform: scale(1);
+  background: #fff;
+  outline: 2px solid #354ee7;
+  box-shadow: 0 24px 48px -28px rgba(19,34,55,.55);
+  cursor: default;
+}
+#testimonios .test-card::after {
+  content: ''; position: absolute; left: 0; top: 50%;
+  width: 3px; height: 0; border-radius: 0 3px 3px 0;
+  background: #354ee7;
+  transform: translateY(-50%);
+  transition: height .45s ease;
+}
+#testimonios .test-card.is-active::after { height: 60%; }
+
+#testimonios .test-avatar {
+  width: 64px; height: 64px; border-radius: 12px;
+  overflow: hidden; flex-shrink: 0; background: #bbb;
+  transition: width .45s ease, height .45s ease;
+}
+#testimonios .test-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#testimonios .test-card.is-active .test-avatar { width: 76px; height: 76px; }
+
+#testimonios .test-body { flex: 1; min-width: 0; }
+#testimonios .test-text {
+  font-family: "Archivo:ExtraLight", sans-serif;
+  font-size: 16px; font-weight: 200;
+  line-height: 1.44; color: #111;
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+#testimonios .test-card.is-active .test-text {
+  -webkit-line-clamp: unset; line-clamp: unset; overflow: visible;
+}
+#testimonios .test-name {
+  font-family: "Archivo:SemiBold", sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: #6b6b7b; margin-top: 8px;
+  transition: color .45s ease;
+}
+#testimonios .test-card.is-active .test-name { color: #354ee7; font-size: 14px; }
+
+/* Mobile: everything needs to fit one screen for the pinning to work, so the
+   left column and inactive cards are compacted. */
+@media (max-width: 767px) {
+  #testimonios { --test-step: 65; }
+  #testimonios .test-sticky { padding: 88px 20px 36px; }
+  #testimonios .testimonios-wrap { gap: 24px; }
+  #testimonios .section-title { font-size: 40px; line-height: .9; margin-bottom: 12px; }
+  #testimonios .section-desc {
+    font-size: 16px;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  }
+  #testimonios .test-counter { margin-top: 16px; }
+  #testimonios .test-dots { margin-top: 6px; }
+  #testimonios .test-hint { display: none; }
+  #testimonios .testimonios-list { gap: 12px; }
+  #testimonios .test-card { padding: 14px 16px; gap: 12px; border-radius: 14px; }
+  #testimonios .test-avatar { width: 48px; height: 48px; border-radius: 10px; }
+  #testimonios .test-card.is-active .test-avatar { width: 62px; height: 62px; }
+  #testimonios .test-text { font-size: 15px; -webkit-line-clamp: 1; line-clamp: 1; }
+  #testimonios .test-name { margin-top: 6px; font-size: 12px; }
+}
+
+@media (min-width: 768px) {
+  #testimonios .test-sticky { padding: 112px 40px 64px; }
+  #testimonios .testimonios-wrap { gap: 40px; }
+}
+@media (min-width: 1024px) {
+  #testimonios { --test-step: 80; }
+  #testimonios .test-sticky { padding: 112px 64px 64px; }
+  #testimonios .testimonios-wrap { flex-direction: row; gap: 64px; align-items: center; }
+  #testimonios .test-text { font-size: 18px; }
+  #testimonios .testimonios-list { gap: 16px; }
+  #testimonios .test-card { padding: 22px 24px; }
+}
+
+/* Static mode: if the content doesn't fit one screen, React adds `is-static`
+   and the section becomes a normal list, with no pinning. */
+#testimonios.is-static .test-track { height: auto; }
+#testimonios.is-static .test-sticky {
+  position: static; min-height: 0; padding: 64px 24px;
+}
+#testimonios.is-static .test-hint { display: none; }
+
+/* Respect reduced-motion preference: no pinning, no text clamping, no transitions. */
+@media (prefers-reduced-motion: reduce) {
+  #testimonios .test-track { height: auto; }
+  #testimonios .test-sticky { position: static; min-height: 0; padding: 64px 24px; }
+  #testimonios .test-card {
+    opacity: 1; transform: none;
+    transition: outline-color .01ms, background .01ms;
+  }
+  #testimonios .test-card .test-text { -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; }
+  #testimonios .test-avatar, #testimonios .test-dot, #testimonios .test-dot::before, #testimonios .test-card::after { transition: none; }
+  #testimonios .test-hint { display: none; }
+  #testimonios .test-hint svg { animation: none; }
+}
+
+/* ─── Oferta Académica — sticky scroll-driven carousel ────────────────────
+   Same rail-and-pin mechanic as Testimonios: `.oferta-track` is a tall rail;
+   while scrolling through it, `.oferta-sticky` stays pinned full-screen and
+   the active program advances with scroll progress. */
+#oferta-academica { --oferta-count: 5; --oferta-step: 70; }
+
+#oferta-academica .oferta-track {
+  position: relative;
+  height: calc(100vh + (var(--oferta-count) - 1) * var(--oferta-step) * 1vh);
+}
+@supports (height: 100svh) {
+  #oferta-academica .oferta-track {
+    height: calc(100svh + (var(--oferta-count) - 1) * var(--oferta-step) * 1svh);
+  }
+}
+
+#oferta-academica .oferta-sticky {
+  position: sticky; top: 0;
+  min-height: 100vh;
+  overflow: hidden;
+}
+@supports (min-height: 100svh) { #oferta-academica .oferta-sticky { min-height: 100svh; } }
+
+@media (max-width: 767px) { #oferta-academica { --oferta-step: 60; } }
+@media (min-width: 1024px) { #oferta-academica { --oferta-step: 85; } }
+
+/* Static mode (reduced motion): no pinning, just the current program full-screen. */
+#oferta-academica.is-static .oferta-track { height: auto; }
+#oferta-academica.is-static .oferta-sticky { position: static; min-height: 100vh; }
+
+@media (prefers-reduced-motion: reduce) {
+  #oferta-academica .oferta-track { height: auto; }
+  #oferta-academica .oferta-sticky { position: static; min-height: 100vh; }
+}

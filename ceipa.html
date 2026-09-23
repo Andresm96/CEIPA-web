@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CEIPA – Powered by Arizona State University</title>
+
+  <!-- Google Fonts: Archivo (200–700) + Lato + Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600;700&family=Lato:wght@400&family=Roboto:wght@400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    /* overflow-x: clip recorta el desborde horizontal SIN crear un contexto de
+       scroll; con `hidden` el navegador convierte <body> en contenedor de scroll
+       y position:sticky deja de funcionar (necesario para #testimonios). */
+    body { background: #fafafa; font-family: 'Archivo', sans-serif; overflow-x: clip; }
+    @supports not (overflow-x: clip) { body { overflow-x: hidden; } }
+    img { display: block; max-width: 100%; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── Tokens ─────────────────────────────────────────── */
+    :root {
+      --blue: #354ee7;
+      --blue-dark: #2a3ec0;
+      --navy: #120957;
+      --gray-bg: #d9d9d9;
+      --text-dark: #060d37;
+    }
+
+    /* ─── Scroll-reveal animations ───────────────────────── */
+    .reveal, .reveal-left, .reveal-right, .reveal-scale {
+      opacity: 0;
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal          { transform: translateY(40px); }
+    .reveal-left     { transform: translateX(-50px); }
+    .reveal-right    { transform: translateX(50px); }
+    .reveal-scale    { transform: scale(.92); }
+    .reveal.visible, .reveal-left.visible,
+    .reveal-right.visible, .reveal-scale.visible {
+      opacity: 1; transform: none;
+    }
+    .delay-100 { transition-delay: .1s; }
+    .delay-200 { transition-delay: .2s; }
+    .delay-300 { transition-delay: .3s; }
+    .delay-400 { transition-delay: .4s; }
+    .delay-500 { transition-delay: .5s; }
+
+    /* ─── Keyframes ───────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-60px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes scrollText {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes menuDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    #ceipa-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: box-shadow .3s;
+    }
+    #ceipa-nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.12); }
+
+    /* Desktop */
+    .nav-desktop {
+      display: none;
+      background: #fff;
+      border-radius: 85px;
+      margin: 16px;
+      padding: 12px 32px;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .nav-logo { height: 40px; object-fit: contain; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-item { position: relative; }
+    .nav-item > button {
+      font-size: 16px; color: #111;
+      display: flex; align-items: center; gap: 4px;
+      transition: color .2s;
+    }
+    .nav-item > button:hover { color: var(--blue); }
+    .nav-item > button svg { transition: transform .2s; }
+    .nav-item:hover > button svg { transform: rotate(180deg); }
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.14);
+      min-width: 200px; padding: 8px 0;
+      opacity: 0; visibility: hidden;
+      transition: opacity .2s, visibility .2s;
+      z-index: 200;
+    }
+    .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; }
+    .nav-dropdown a {
+      display: block; padding: 8px 20px;
+      font-size: 14px; color: #444;
+      transition: color .2s, background .2s;
+    }
+    .nav-dropdown a:hover { color: var(--blue); background: #eef1fd; }
+    .nav-cta {
+      background: var(--blue); color: #fff;
+      font-size: 14px; font-weight: 600;
+      padding: 8px 24px; border-radius: 100px;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--blue-dark); }
+
+    /* Mobile */
+    .nav-mobile {
+      background: #fff;
+      border-radius: 16px;
+      margin: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .nav-mobile-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+    }
+    .nav-logo-mobile { height: 32px; object-fit: contain; }
+    .hamburger {
+      width: 28px; height: 22px;
+      display: flex; flex-direction: column;
+      justify-content: space-between; padding: 2px 0;
+    }
+    .hamburger span {
+      display: block; height: 2px; background: #333;
+      border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    .nav-mobile-menu {
+      border-top: 1px solid #f0f0f0;
+      display: none;
+      animation: menuDown .3s ease;
+    }
+    .nav-mobile-menu.open { display: block; }
+    .mob-link-btn {
+      width: 100%; display: flex;
+      align-items: center; justify-content: space-between;
+      padding: 12px 20px; font-size: 15px; color: #222;
+      transition: color .2s;
+    }
+    .mob-link-btn:hover { color: var(--blue); }
+    .mob-link-btn svg { transition: transform .2s; flex-shrink: 0; }
+    .mob-link-btn.active svg { transform: rotate(180deg); }
+    .mob-sub {
+      background: #f9f9f9; padding: 0 20px;
+      display: none;
+    }
+    .mob-sub.open { display: block; }
+    .mob-sub a {
+      display: block; padding: 10px 0;
+      font-size: 14px; color: #555;
+      border-bottom: 1px solid #eee;
+      transition: color .2s;
+    }
+    .mob-sub a:last-child { border-bottom: none; }
+    .mob-sub a:hover { color: var(--blue); }
+    .mob-cta-wrap { padding: 16px 20px; }
+    .mob-cta {
+      display: block; width: 100%; text-align: center;
+      background: var(--blue); color: #fff;
+      font-size: 15px; font-weight: 600;
+      padding: 12px; border-radius: 100px;
+      transition: background .2s;
+    }
+    .mob-cta:hover { background: var(--blue-dark); }
+
+    @media (min-width: 768px) {
+      .nav-desktop { display: flex; }
+      .nav-mobile { display: none; }
+    }
+
+    /* ─── HERO (foto de fondo completa · carrusel) ───────────── */
+    #hero {
+      position: relative;
+      border-radius: 0 0 55px 55px;
+      overflow: hidden;
+      min-height: 700px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity .7s;
+    }
+    .hero-bg.active { opacity: 1; }
+    .hero-bg-mobile { display: block; }
+    .hero-bg-desktop { display: none; }
+
+    .hero-overlay, .hero-overlay-mobile {
+      position: absolute; inset: 0; z-index: 1;
+      transition: background .7s;
+    }
+    .hero-overlay { display: none; }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 112px 24px 56px;
+      max-width: 1440px; margin: 0 auto;
+    }
+    .hero-text-wrap { width: 100%; }
+    .hero-title-clip { height: 180px; overflow: hidden; margin-bottom: 24px; }
+    .hero-title {
+      font-size: 38px; line-height: 1.05; white-space: pre-line;
+    }
+    #hero-prefix { color: #111; transition: color .3s; }
+    #hero-highlight { color: var(--blue); transition: color .3s; }
+    .hero-desc {
+      font-size: 17px; font-weight: 200; line-height: 1.44;
+      max-width: 560px; margin-bottom: 32px; color: #111;
+      transition: color .3s;
+    }
+    .hero-cta {
+      display: inline-block; font-size: 18px; padding: 12px 32px;
+      border-radius: 100px; transition: transform .3s, background .3s, color .3s, border-color .3s;
+      border: 1px solid var(--blue); background: transparent; color: var(--text-dark);
+    }
+    .hero-cta:hover { transform: scale(1.03); }
+    .hero-cta.glass {
+      background: rgba(255,255,255,.15); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.55); color: #fff;
+    }
+    .hero-dots { display: flex; gap: 12px; margin-top: 40px; }
+    .hero-slide-dot {
+      height: 4px; border-radius: 4px; padding: 0; border: none; cursor: pointer;
+      transition: width .3s, background .3s;
+      background: rgba(53,78,231,.3); width: 16px;
+    }
+    .hero-slide-dot.active { width: 40px; background: var(--blue); }
+    .hero-slide-dot.dark { background: rgba(255,255,255,.4); }
+    .hero-slide-dot.dark.active { background: #fff; }
+
+    .hero-arrow {
+      position: absolute; z-index: 20;
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.7); backdrop-filter: blur(6px);
+      border: none; cursor: pointer; transition: transform .2s, background .2s;
+      bottom: 28px;
+    }
+    .hero-arrow:hover { transform: scale(1.1); }
+    .hero-arrow.dark { background: rgba(255,255,255,.15); }
+    .hero-arrow-prev { left: 16px; }
+    .hero-arrow-next { right: 16px; }
+
+    .hero-links-bar {
+      background: #fff; padding: 20px 24px;
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    .hero-links-bar a { font-size: 15px; font-weight: 600; color: var(--blue); white-space: nowrap; }
+    .hero-links-bar a:hover { color: var(--blue-dark); }
+
+    @media (max-width: 767px) { .hero-overlay-mobile { display: block; } }
+
+    @media (min-width: 768px) {
+      #hero { min-height: 680px; }
+      .hero-overlay { display: block; }
+      .hero-overlay-mobile { display: none; }
+      .hero-bg-mobile { display: none; }
+      .hero-bg-desktop { display: block; }
+      .hero-content { padding: 128px 64px 64px; }
+      .hero-text-wrap { max-width: 52%; }
+      .hero-title-clip { height: 260px; }
+      .hero-title { font-size: 64px; }
+      .hero-desc { font-size: 20px; }
+      .hero-arrow { bottom: auto; top: 50%; transform: translateY(-50%); }
+      .hero-arrow:hover { transform: translateY(-50%) scale(1.1); }
+      .hero-arrow-prev { left: 32px; }
+      .hero-arrow-next { right: 32px; }
+      .hero-links-bar { justify-content: space-around; padding: 20px 64px; }
+      .hero-links-bar a { font-size: 17px; }
+    }
+
+    /* ─── FORM SECTION ─────────────────────────────────────── */
+    #form-section {
+      max-width: 1440px; margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .form-wrap {
+      display: flex; flex-direction: column; gap: 48px; align-items: center;
+    }
+    .form-left { flex: 1; max-width: 440px; }
+    .form-heading-blue {
+      font-size: 52px; font-weight: 700;
+      color: var(--blue); line-height: .83; margin-bottom: 8px;
+    }
+    .form-heading-dark {
+      font-size: 52px; font-weight: 400;
+      color: var(--text-dark); line-height: .83;
+    }
+    .form-desc {
+      font-size: 18px; font-weight: 200;
+      line-height: 1.44; color: #111; margin-top: 32px;
+    }
+    .form-card {
+      flex: 1; width: 100%; max-width: 946px;
+      background: linear-gradient(to bottom, #f0f3f6, #fff);
+      border: 2px solid var(--gray-bg);
+      border-radius: 40px;
+      box-shadow: 0 30px 63px -42px rgba(19,34,55,.34);
+      padding: 40px;
+    }
+    .form-card h3 {
+      font-size: 24px; font-weight: 400;
+      color: #132237; margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 16px; margin-bottom: 16px;
+    }
+    .form-grid input {
+      background: #fff;
+      border: none; outline: none;
+      border-radius: 20px;
+      box-shadow: 0 10px 10px -5px rgba(0,0,0,.1);
+      padding: 12px 20px;
+      font-size: 13.3px;
+      font-family: 'Lato', sans-serif;
+      color: #aaa;
+      transition: box-shadow .2s;
+    }
+    .form-grid input:focus {
+      box-shadow: 0 0 0 2px rgba(53,78,231,.25);
+    }
+    .form-grid input::placeholder { color: #aaa; }
+    .form-bottom {
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 16px; margin-top: 24px;
+    }
+    .form-captcha {
+      height: 54px; width: 160px;
+      border-radius: 11px; overflow: hidden;
+      box-shadow: 0 4px 4px rgba(0,0,0,.05);
+      flex-shrink: 0;
+    }
+    .form-captcha img { width: 100%; height: 100%; object-fit: cover; }
+    .form-legal {
+      font-family: 'Roboto', sans-serif;
+      font-size: 9px; text-align: center; color: #111; margin-top: 16px;
+    }
+    .form-legal span { text-decoration: underline; }
+
+    @media (min-width: 640px) {
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .form-bottom { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    @media (min-width: 1024px) {
+      .form-wrap { flex-direction: row; }
+      .form-heading-blue, .form-heading-dark { font-size: 60px; }
+      .form-desc { font-size: 20px; }
+      #form-section { padding: 80px 64px; }
+    }
+
+    /* ─── OFERTA ACADÉMICA (sticky · dirigido por scroll) ────── */
+    #oferta { --oferta-count: 5; --oferta-step: 70; }
+    .oferta-track {
+      position: relative;
+      height: calc(100vh + (var(--oferta-count) - 1) * var(--oferta-step) * 1vh);
+    }
+    @supports (height: 100svh) {
+      .oferta-track {
+        height: calc(100svh + (var(--oferta-count) - 1) * var(--oferta-step) * 1svh);
+      }
+    }
+    .oferta-sticky {
+      position: sticky; top: 0;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    @supports (min-height: 100svh) { .oferta-sticky { min-height: 100svh; } }
+    .oferta-bg-layer {
+      position: absolute; inset: 0; z-index: 0;
+      opacity: 0; transition: opacity .5s linear;
+    }
+    .oferta-bg-layer.active { opacity: 1; }
+    .oferta-bg-layer img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: blur(2px); transform: scale(1.1);
+      transition: transform 1s ease-in-out;
+    }
+    .oferta-bg-layer.active img { transform: scale(1); }
+    .oferta-gradient {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(150deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.38) 50%, rgba(30,30,30,.15) 100%);
+    }
+    .oferta-body {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Left column — heading + rolling text */
+    .oferta-left {
+      display: flex; align-items: center; width: 100%;
+      padding: 80px 24px 32px 24px;
+    }
+    .oferta-dotbar {
+      display: none; flex-direction: column; justify-content: space-between; align-items: center;
+      position: relative; flex-shrink: 0;
+      width: 30px; height: min(600px,70vh); margin-right: 24px;
+    }
+    .oferta-dotbar::before {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      top: 10px; bottom: 10px; width: 1px; background: #B0B7D04D;
+    }
+    .oferta-dot-btn {
+      width: 23px; height: 23px; border-radius: 100px; background: #B0B7D0;
+      border: none; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      transform: scale(.304); transition: transform .3s ease-in-out;
+      position: relative; z-index: 1;
+    }
+    .oferta-dot-btn.active { transform: scale(1); }
+    .oferta-dot-btn span { color: #fff; font-size: 13px; font-weight: bold; opacity: 0; transition: opacity .3s; }
+    .oferta-dot-btn.active span { opacity: 1; }
+
+    .oferta-text { flex: 1; min-width: 0; }
+    .oferta-prog-title {
+      font-size: 30px; line-height: 1.15em; font-weight: 700; color: #fff;
+      margin: 0 0 20px; transition: opacity .25s ease;
+    }
+    .oferta-prog-desc {
+      font-size: 16px; line-height: 1.6; font-weight: 200; color: rgba(255,255,255,.85);
+      max-width: 420px; text-shadow: 0 0 10px rgba(0,0,0,.3);
+      margin: 0 0 28px; transition: opacity .25s ease;
+    }
+    .oferta-prog-btn {
+      display: inline-block; background: var(--blue); color: #fff;
+      padding: 15px 30px; font-size: 16px; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer; transition: background .2s;
+    }
+    .oferta-prog-btn:hover { background: var(--blue-dark); }
+    .oferta-fade { opacity: 0; }
+
+    .oferta-mobile-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; max-width: 280px; }
+    .oferta-mobile-dots { display: flex; align-items: center; gap: 8px; }
+    .oferta-mob-dot { height: 7px; width: 7px; border-radius: 100px; background: rgba(255,255,255,.5); border: none; cursor: pointer; padding: 0; transition: all .3s ease-in-out; }
+    .oferta-mob-dot.active { width: 23px; background: var(--blue); }
+    .oferta-mobile-arrows { display: flex; gap: 8px; }
+    .oferta-mob-arrow {
+      width: 36px; height: 36px; border-radius: 100px;
+      background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    /* Right column — overlapping card stack */
+    .oferta-right { display: none; flex-direction: column; justify-content: center; overflow: hidden; flex: 1; min-width: 0; padding: 60px 0 40px; }
+    .oferta-card-stack { position: relative; overflow: hidden; height: 430px; margin-bottom: 20px; }
+    .oferta-card {
+      position: absolute; bottom: 0; width: 256px; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 0 50px rgba(0,0,0,.15); cursor: pointer;
+      transition: height .3s ease-in-out .2s, left .5s ease;
+    }
+    .oferta-card.is-active { height: 410px; cursor: default; }
+    .oferta-card:not(.is-active) { height: 320px; }
+    .oferta-card img { width: 100%; height: 100%; object-fit: cover; }
+    .oferta-card-shade { position: absolute; inset: 0; background: linear-gradient(20deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 100%); }
+    .oferta-card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 20px 25px; }
+    .oferta-card-info p { margin: 0; }
+    .oferta-card-info .oferta-card-title { color: #fff; font-size: 19px; font-weight: 600; }
+    .oferta-card-info .oferta-card-tag { color: #B7B7B7B8; font-size: 14px; margin-top: 4px; }
+    .oferta-right-arrows { display: flex; gap: 17px; }
+    .oferta-r-arrow { width: 41px; height: 40px; border-radius: 100px; background: #BDBDBD9C; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    @media (min-width: 768px) {
+      .oferta-body { flex-direction: row; }
+      .oferta-left { width: 50%; padding: 100px 32px 40px 64px; }
+      .oferta-dotbar { display: flex; }
+      .oferta-prog-title { font-size: 56px; }
+      .oferta-prog-desc { font-size: 19px; }
+      .oferta-mobile-controls { display: none; }
+      .oferta-right { display: flex; width: 50%; }
+    }
+    @media (max-width: 767px) { #oferta { --oferta-step: 60; } }
+    @media (min-width: 1024px) { #oferta { --oferta-step: 85; } }
+
+    /* Static mode (reduced motion or content that doesn't fit): no pinning. */
+    #oferta.is-static .oferta-track { height: auto; }
+    #oferta.is-static .oferta-sticky { position: static; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .oferta-track { height: auto; }
+      .oferta-sticky { position: static; }
+    }
+
+    /* ─── POR QUÉ CEIPA (editorial: título grande sobre la foto) ── */
+    #por-que {
+      max-width: 1440px; margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-title {
+      font-size: 52px; font-weight: 700;
+      color: var(--blue); line-height: .83; margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 18px; font-weight: 200;
+      line-height: 1.44; color: #111; max-width: 400px;
+    }
+    .por-que-row { display: flex; flex-direction: column; }
+    .por-que-title {
+      position: relative; z-index: 2; flex-shrink: 0;
+      font-size: 48px; font-weight: 700; color: var(--blue);
+      line-height: .92; letter-spacing: -0.02em;
+      padding-bottom: 16px;
+    }
+    .por-que-media { flex: 1; min-width: 0; }
+    .por-que-img { height: 280px; border-radius: 16px; overflow: hidden; }
+    .por-que-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+    .por-que-caption {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 12px; font-size: 13px; color: rgba(0,0,0,.6);
+    }
+    .por-que-side {
+      flex-shrink: 0; padding-top: 32px;
+      display: flex; flex-direction: column;
+    }
+    .por-que-side svg { margin-bottom: 16px; }
+    .por-que-side-title { font-size: 20px; font-weight: 600; color: var(--text-dark); line-height: 1.2; margin-bottom: 8px; }
+    .por-que-side-desc { font-size: 14px; color: rgba(0,0,0,.7); line-height: 1.6; }
+
+    @media (min-width: 1024px) {
+      #por-que { padding: 96px 64px; }
+      .por-que-row { flex-direction: row; align-items: flex-end; }
+      .por-que-title { font-size: 84px; padding-bottom: 32px; margin-right: -110px; }
+      .por-que-img { height: 560px; }
+      .por-que-side { width: 300px; padding-left: 40px; padding-bottom: 40px; padding-top: 0; }
+    }
+
+    /* ─── TESTIMONIOS (sticky · dirigido por scroll) ────────── */
+
+    /* Utilidad: visible solo para lectores de pantalla */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+    }
+
+    /* --test-count lo inyecta el JS (nº de testimonios).
+       Altura del riel = 1 pantalla + 1 tramo de scroll por cada testimonio
+       extra. Cada tramo equivale a --test-step de alto de viewport. */
+    #testimonios { --test-count: 3; --test-step: 70; }
+
+    .test-track {
+      position: relative;
+      height: calc(100vh + (var(--test-count) - 1) * var(--test-step) * 1vh);
+    }
+    @supports (height: 100svh) {
+      .test-track {
+        height: calc(100svh + (var(--test-count) - 1) * var(--test-step) * 1svh);
+      }
+    }
+
+    .test-sticky {
+      position: sticky; top: 0;
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 104px 24px 56px;
+    }
+    @supports (min-height: 100svh) { .test-sticky { min-height: 100svh; } }
+
+    .testimonios-wrap {
+      width: 100%; max-width: 1440px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+    .testimonios-left { flex-shrink: 0; max-width: 440px; }
+
+    /* Contador 01 / 03 */
+    .test-counter {
+      display: flex; align-items: baseline; gap: 6px;
+      margin-top: 24px;
+      font-size: 15px; font-weight: 600; color: var(--blue);
+      font-variant-numeric: tabular-nums;
+    }
+    .test-counter-sep { opacity: .4; font-weight: 400; }
+    #test-counter-total { opacity: .4; font-weight: 400; }
+
+    /* Puntos: la pastilla visible mide 4px de alto, pero el <button> ocupa
+       44px para cumplir el tamaño mínimo de objetivo táctil (WCAG 2.5.8). */
+    .test-dots { display: flex; gap: 12px; margin-top: 12px; }
+    .test-dot {
+      position: relative;
+      width: 16px; height: 44px;
+      padding: 0; border: none; background: none;
+      border-radius: 6px;
+      transition: width .35s ease;
+    }
+    .test-dot::before {
+      content: ''; position: absolute; inset-inline: 0; top: 50%;
+      height: 4px; margin-top: -2px; border-radius: 4px;
+      background: rgba(53,78,231,.3);
+      transition: background .35s ease;
+    }
+    .test-dot:hover::before { background: rgba(53,78,231,.55); }
+    .test-dot.is-active { width: 40px; }
+    .test-dot.is-active::before { background: var(--blue); }
+    .test-dot:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    .test-hint {
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 16px; font-size: 13px; font-weight: 400; color: #6b6b7b;
+      transition: opacity .4s ease;
+    }
+    .test-hint svg { animation: hintBounce 1.8s ease-in-out infinite; }
+    .test-hint.is-done { opacity: 0; }
+    @keyframes hintBounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(4px); }
+    }
+
+    .testimonios-list { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+    .test-card {
+      position: relative;
+      background: var(--gray-bg); border-radius: 16px;
+      padding: 18px 20px; display: flex; align-items: center;
+      gap: 16px; cursor: pointer;
+      opacity: .55;
+      transform: scale(.97);
+      box-shadow: 0 0 0 rgba(19,34,55,0);
+      transition: opacity .45s ease, transform .45s ease,
+                  background .45s ease, box-shadow .45s ease;
+    }
+    .test-card:hover { opacity: .8; }
+    .test-card.is-active {
+      opacity: 1;
+      transform: scale(1);
+      background: #fff;
+      outline: 2px solid var(--blue);
+      box-shadow: 0 24px 48px -28px rgba(19,34,55,.55);
+      cursor: default;
+    }
+    /* Barra azul que marca la tarjeta activa */
+    .test-card::after {
+      content: ''; position: absolute; left: 0; top: 50%;
+      width: 3px; height: 0; border-radius: 0 3px 3px 0;
+      background: var(--blue);
+      transform: translateY(-50%);
+      transition: height .45s ease;
+    }
+    .test-card.is-active::after { height: 60%; }
+
+    .test-avatar {
+      width: 64px; height: 64px; border-radius: 12px;
+      overflow: hidden; flex-shrink: 0; background: #bbb;
+      transition: width .45s ease, height .45s ease;
+    }
+    .test-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .test-card.is-active .test-avatar { width: 76px; height: 76px; }
+
+    .test-body { flex: 1; min-width: 0; }
+    .test-text {
+      font-size: 16px; font-weight: 200;
+      line-height: 1.44; color: #111;
+      display: -webkit-box; -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    }
+    .test-card.is-active .test-text {
+      -webkit-line-clamp: unset; line-clamp: unset; overflow: visible;
+    }
+    .test-name {
+      font-size: 13px; font-weight: 600;
+      color: #6b6b7b; margin-top: 8px;
+      transition: color .45s ease;
+    }
+    .test-card.is-active .test-name { color: var(--blue); font-size: 14px; }
+
+    /* Móvil: hay que caber en una pantalla para que el pinning funcione,
+       así que se compacta la columna izquierda y las tarjetas inactivas. */
+    @media (max-width: 767px) {
+      #testimonios { --test-step: 65; }
+      .test-sticky { padding: 88px 20px 36px; }
+      .testimonios-wrap { gap: 24px; }
+      #testimonios .section-title { font-size: 40px; line-height: .9; margin-bottom: 12px; }
+      #testimonios .section-desc {
+        font-size: 16px;
+        display: -webkit-box; -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+      }
+      .test-counter { margin-top: 16px; }
+      .test-dots { margin-top: 6px; }
+      .test-hint { display: none; }
+      .testimonios-list { gap: 12px; }
+      .test-card { padding: 14px 16px; gap: 12px; border-radius: 14px; }
+      .test-avatar { width: 48px; height: 48px; border-radius: 10px; }
+      .test-card.is-active .test-avatar { width: 62px; height: 62px; }
+      .test-text { font-size: 15px; -webkit-line-clamp: 1; line-clamp: 1; }
+      .test-name { margin-top: 6px; font-size: 12px; }
+    }
+
+    @media (min-width: 768px) {
+      .test-sticky { padding: 112px 40px 64px; }
+      .testimonios-wrap { gap: 40px; }
+    }
+    @media (min-width: 1024px) {
+      #testimonios { --test-step: 80; }
+      .test-sticky { padding: 112px 64px 64px; }
+      .testimonios-wrap { flex-direction: row; gap: 64px; align-items: center; }
+      .test-text { font-size: 18px; }
+      .testimonios-list { gap: 16px; }
+      .test-card { padding: 22px 24px; }
+    }
+
+    /* Modo estático: si el contenido no cabe en una pantalla el JS añade
+       .is-static y la sección vuelve a ser una lista normal, sin pinning. */
+    #testimonios.is-static .test-track { height: auto; }
+    #testimonios.is-static .test-sticky {
+      position: static; min-height: 0; padding: 64px 24px;
+    }
+    #testimonios.is-static .test-hint { display: none; }
+
+    /* Respeta la preferencia de movimiento reducido (WCAG 2.3.3):
+       sin pinning, sin recorte de texto y sin transiciones. */
+    @media (prefers-reduced-motion: reduce) {
+      .test-track { height: auto; }
+      .test-sticky { position: static; min-height: 0; padding: 64px 24px; }
+      .test-card {
+        opacity: 1; transform: none;
+        transition: outline-color .01ms, background .01ms;
+      }
+      .test-card .test-text { -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; }
+      .test-avatar, .test-dot, .test-dot::before, .test-card::after { transition: none; }
+      .test-hint { display: none; }
+      .test-hint svg { animation: none; }
+    }
+
+    /* ─── INNOVATION TEXT ──────────────────────────────────── */
+    #innovation { padding: 40px 0; overflow: hidden; }
+    .innovation-track {
+      display: flex; white-space: nowrap;
+      animation: scrollText 20s linear infinite;
+    }
+    .innovation-text {
+      font-size: 100px; font-weight: 100;
+      color: var(--blue); line-height: .83;
+      opacity: .36; padding-right: 80px;
+      font-family: 'Archivo', sans-serif;
+    }
+
+    @media (min-width: 768px) {
+      .innovation-text { font-size: 160px; }
+    }
+
+    /* ─── FINANCIACIÓN ─────────────────────────────────────── */
+    #financiacion {
+      background: var(--gray-bg);
+      padding: 64px 24px; overflow: hidden;
+    }
+    .financiacion-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      gap: 32px; align-items: center;
+    }
+    .financiacion-text { flex: 1; max-width: 700px; z-index: 1; }
+    .financiacion-triangle {
+      flex: 1; width: 100%; height: 300px; position: relative;
+    }
+    .financiacion-triangle svg { width: 100%; height: 100%; }
+    .btn-filled {
+      display: inline-block;
+      background: var(--blue); color: #fff;
+      font-size: 18px; padding: 12px 32px;
+      border-radius: 100px;
+      transition: background .3s;
+    }
+    .btn-filled:hover { background: var(--blue-dark); }
+
+    @media (min-width: 1024px) {
+      #financiacion { padding: 80px 64px; }
+      .financiacion-inner { flex-direction: row; }
+    }
+
+    /* ─── NOVEDADES ────────────────────────────────────────── */
+    #novedades {
+      max-width: 1440px; margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .novedades-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; gap: 16px;
+      margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .novedades-header .section-title { margin-bottom: 8px; }
+    .novedades-header .section-desc { max-width: 460px; }
+    .ver-todas {
+      display: inline-block; flex-shrink: 0;
+      border: 1px solid var(--blue); color: var(--blue);
+      font-size: 15px; font-weight: 600;
+      padding: 10px 28px; border-radius: 100px;
+      transition: background .25s, color .25s;
+      white-space: nowrap;
+    }
+    .ver-todas:hover { background: var(--blue); color: #fff; }
+    .novedades-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .novedad-card {
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+      transition: transform .3s, box-shadow .3s;
+      display: flex; flex-direction: column;
+    }
+    .novedad-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,.12);
+    }
+    .novedad-img {
+      height: 200px; overflow: hidden;
+    }
+    .novedad-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .novedad-card:hover .novedad-img img { transform: scale(1.04); }
+    .novedad-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .novedad-tag {
+      display: inline-block;
+      background: rgba(53,78,231,.1);
+      color: var(--blue);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 12px; letter-spacing: .4px;
+    }
+    .novedad-title {
+      font-size: 18px; font-weight: 700;
+      color: var(--text-dark); line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .novedad-excerpt {
+      font-size: 14px; font-weight: 200;
+      color: #555; line-height: 1.55; flex: 1;
+    }
+    .novedad-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .novedad-date { font-size: 12px; color: #999; }
+    .novedad-link {
+      font-size: 13px; font-weight: 600;
+      color: var(--blue); display: flex;
+      align-items: center; gap: 4px;
+      transition: gap .2s;
+    }
+    .novedad-link:hover { gap: 8px; }
+
+    @media (min-width: 640px) {
+      .novedades-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1024px) {
+      #novedades { padding: 80px 64px; }
+      .novedades-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    /* ─── FAQS ──────────────────────────────────────────────── */
+    #faqs {
+      background: var(--gray-bg);
+      padding: 64px 24px;
+    }
+    .faqs-inner {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 48px;
+    }
+    .faqs-left { flex-shrink: 0; max-width: 400px; }
+    .faqs-list { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: #fff; border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: box-shadow .2s;
+    }
+    .faq-item.open { box-shadow: 0 4px 20px rgba(53,78,231,.15); }
+    .faq-btn {
+      width: 100%; display: flex;
+      align-items: center; justify-content: space-between;
+      padding: 20px 24px; text-align: left;
+      font-size: 16px; font-weight: 600;
+      color: var(--text-dark);
+      transition: color .2s;
+    }
+    .faq-item.open .faq-btn { color: var(--blue); }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(53,78,231,.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .2s, transform .3s;
+    }
+    .faq-item.open .faq-icon { background: var(--blue); transform: rotate(45deg); }
+    .faq-icon svg { transition: stroke .2s; }
+    .faq-item.open .faq-icon svg { stroke: #fff; }
+    .faq-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s ease, padding .35s ease;
+      padding: 0 24px;
+      font-size: 15px; font-weight: 200;
+      color: #444; line-height: 1.65;
+    }
+    .faq-item.open .faq-body { max-height: 300px; padding: 0 24px 20px; }
+
+    @media (min-width: 1024px) {
+      #faqs { padding: 80px 64px; }
+      .faqs-inner { flex-direction: row; }
+    }
+
+    /* ─── CTA MATRICÚLATE ──────────────────────────────────── */
+    #cta-matricula {
+      max-width: 1440px; margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .cta-card {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #4450f2 0%, #4450f2 55%, #8afff6 100%);
+      border-radius: 45px;
+      padding: 56px 32px;
+      text-align: center;
+    }
+    .cta-glow-a, .cta-glow-b {
+      position: absolute; border-radius: 50%;
+      filter: blur(60px); pointer-events: none;
+    }
+    .cta-glow-a { top: -96px; left: -96px; width: 280px; height: 280px; background: rgba(255,255,255,.15); }
+    .cta-glow-b { bottom: -96px; right: -96px; width: 320px; height: 320px; background: rgba(255,255,255,.2); }
+    .cta-content { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+    .cta-title {
+      font-size: clamp(26px, 3.6vw, 40px); font-weight: 700; color: #fff;
+      line-height: 1.05; margin-bottom: 16px;
+    }
+    .cta-desc {
+      font-size: 17px; font-weight: 200; color: rgba(255,255,255,.9);
+      line-height: 1.5; margin-bottom: 36px;
+      max-width: 320px; margin-left: auto; margin-right: auto;
+    }
+    .btn-cta {
+      display: inline-block;
+      background: #fff; color: #4450f2;
+      font-size: 17px; font-weight: 600;
+      padding: 16px 40px; border-radius: 100px;
+      box-shadow: 0 12px 32px rgba(6,13,55,.25);
+      transition: transform .3s, background .3s;
+    }
+    .btn-cta:hover { background: rgba(255,255,255,.9); transform: scale(1.04); }
+
+    @media (min-width: 768px) {
+      .cta-card { padding: 80px 64px; }
+      .cta-title { white-space: nowrap; }
+      .cta-desc { font-size: 20px; max-width: 700px; }
+    }
+
+    /* ─── ACREDITACIONES ───────────────────────────────────── */
+    #acreditaciones {
+      max-width: 1440px; margin: 0 auto;
+      padding: 48px 24px;
+      overflow: hidden;
+    }
+    .acred-label {
+      text-align: center; font-size: 13px; font-weight: 600;
+      color: #71717a; letter-spacing: .52px; margin-bottom: 32px;
+    }
+    .acred-track { overflow: hidden; }
+    .acred-grid {
+      display: flex; align-items: center;
+      width: max-content;
+      animation: scrollText 32s linear infinite;
+    }
+    .acred-grid:hover { animation-play-state: paused; }
+    .acred-group { display: flex; align-items: center; gap: 24px; flex-shrink: 0; padding-right: 24px; }
+    .acred-seal {
+      position: relative;
+      background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 10px; height: 150px; width: 200px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; flex-shrink: 0;
+    }
+    .acred-seal img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .acred-seal-name {
+      position: absolute; inset: 0; border-radius: 10px;
+      background: rgba(6,13,55,.85);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+      color: #fff; font-size: 16px; font-weight: 600; line-height: 1.35;
+      opacity: 0; transition: opacity .3s ease; pointer-events: none;
+    }
+    .acred-seal:hover .acred-seal-name { opacity: 1; }
+
+    /* ─── FOOTER ───────────────────────────────────────────── */
+    #footer { background: var(--navy); color: #fff; }
+    .footer-main {
+      max-width: 1440px; margin: 0 auto;
+      padding: 48px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .footer-logo { height: 40px; object-fit: contain; margin-bottom: 16px; }
+    .footer-iso {
+      height: 90px; object-fit: contain;
+      background: #fff; border-radius: 8px; padding: 8px;
+    }
+    .footer-legal {
+      max-width: 1440px; margin: 0 auto;
+      padding: 32px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .footer-legal p { font-size: 12px; color: #a5a1e8; line-height: 1.6; max-width: 900px; }
+    .footer-legal-emails { display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 8px; }
+    .footer-legal-emails p { font-size: 12px; }
+    .footer-legal-emails a { color: #fff; }
+    .footer-legal-emails a:hover { text-decoration: underline; }
+    .footer-col-title {
+      font-size: 13px; font-weight: 600;
+      color: #fff; margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block; font-size: 14px;
+      color: #a5a1e8; margin-bottom: 12px;
+      transition: color .2s;
+    }
+    .footer-col a:hover { color: #fff; }
+    .newsletter-row { display: flex; gap: 8px; }
+    .newsletter-row input {
+      flex: 1; background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 8px; padding: 8px 12px;
+      font-size: 13px; color: #fff;
+      font-family: 'Archivo', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .newsletter-row input::placeholder { color: rgba(255,255,255,.4); }
+    .newsletter-row input:focus { border-color: var(--blue); }
+    .newsletter-row button {
+      background: var(--blue); color: #fff;
+      font-size: 13px; font-weight: 600;
+      padding: 8px 16px; border-radius: 8px;
+      transition: background .2s;
+    }
+    .newsletter-row button:hover { background: var(--blue-dark); }
+    .footer-bottom {
+      max-width: 1440px; margin: 0 auto;
+      padding: 16px 24px;
+      display: flex; flex-direction: column;
+      gap: 8px; align-items: center;
+    }
+    .footer-bottom p, .footer-bottom a {
+      font-size: 13px; color: #7f7ac0;
+    }
+    .footer-bottom a:hover { color: #fff; }
+    .footer-bottom-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+
+    @media (min-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      .footer-main { padding: 48px 64px; }
+      .footer-legal { padding: 32px 64px; }
+      .footer-bottom { flex-direction: row; justify-content: space-between; padding: 16px 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     INSTRUCCIONES PARA WORDPRESS:
+     1. Sube los logos e imágenes a tu biblioteca de medios
+     2. Reemplaza todas las rutas de imágenes que dicen
+        "TU-IMAGEN-AQUI.jpg" con las URLs de tu media library
+     3. Pega este código en un bloque HTML personalizado
+        o en un page template
+════════════════════════════════════════════ -->
+
+<!-- ─── NAV ──────────────────────────────────────────── -->
+<nav id="ceipa-nav">
+  <!-- Desktop -->
+  <div class="nav-desktop">
+    <img src="src/imports/logo-ceipa-azul-png.png" alt="CEIPA" class="nav-logo" />
+    <div class="nav-links">
+      <div class="nav-item">
+        <button>Estudia en CEIPA <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#">Pregrados</a>
+          <a href="#">Posgrados</a>
+          <a href="#">Educación continua</a>
+          <a href="#">Admisiones</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>Estudiantes <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#">Portal académico</a>
+          <a href="#">Bienestar universitario</a>
+          <a href="#">Egresados</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>CEIPA <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#">Institución</a>
+          <a href="#">Entorno empresarial</a>
+          <a href="#">Actualidad</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>Entorno empresarial <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#">Empresas aliadas</a>
+          <a href="#">Formación corporativa</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>Actualidad <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#">Noticias</a>
+          <a href="#">Eventos</a>
+          <a href="#">Blog</a>
+        </div>
+      </div>
+    </div>
+    <button class="nav-cta">Inscríbete</button>
+  </div>
+
+  <!-- Mobile -->
+  <div class="nav-mobile">
+    <div class="nav-mobile-top">
+      <img src="src/imports/logo-ceipa-azul-png.png" alt="CEIPA" class="nav-logo-mobile" />
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="mobile-menu">
+      <div class="mob-item">
+        <button class="mob-link-btn" data-target="sub-estudia">Estudia en CEIPA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="mob-sub" id="sub-estudia">
+          <a href="#">Pregrados</a><a href="#">Posgrados</a><a href="#">Educación continua</a><a href="#">Admisiones</a>
+        </div>
+      </div>
+      <div class="mob-item">
+        <button class="mob-link-btn" data-target="sub-estudiantes">Estudiantes <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="mob-sub" id="sub-estudiantes">
+          <a href="#">Portal académico</a><a href="#">Bienestar universitario</a><a href="#">Egresados</a>
+        </div>
+      </div>
+      <div class="mob-item">
+        <button class="mob-link-btn" data-target="sub-ceipa">CEIPA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="mob-sub" id="sub-ceipa">
+          <a href="#">Institución</a><a href="#">Entorno empresarial</a><a href="#">Actualidad</a><a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="mob-item">
+        <button class="mob-link-btn" data-target="sub-entorno">Entorno empresarial <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="mob-sub" id="sub-entorno">
+          <a href="#">Empresas aliadas</a><a href="#">Formación corporativa</a>
+        </div>
+      </div>
+      <div class="mob-item">
+        <button class="mob-link-btn" data-target="sub-actualidad">Actualidad <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="mob-sub" id="sub-actualidad">
+          <a href="#">Noticias</a><a href="#">Eventos</a><a href="#">Blog</a>
+        </div>
+      </div>
+      <div class="mob-cta-wrap"><a href="#" class="mob-cta">Inscríbete</a></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO (foto de fondo completa · carrusel) ────────── -->
+<section id="hero">
+  <!-- Fondos — crossfade por slide, JS alterna la clase .active -->
+  <img src="src/imports/image-1.png" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
+  <img src="src/imports/image-2.png" alt="" aria-hidden class="hero-bg hero-bg-desktop active" data-slide="0" />
+  <img src="src/imports/Imagen_de_Codex_17_sept_2026__10_50_11.png" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="1" />
+  <img src="src/imports/Imagen_de_Codex_17_sept_2026__10_53_23.png" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="1" />
+  <img src="src/imports/ceipa-hero-mobile-1080x1400.jpg" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
+  <img src="src/imports/ceipa-hero-desktop-1920x700.jpg" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
+
+  <div class="hero-overlay" id="hero-overlay"></div>
+  <div class="hero-overlay-mobile" id="hero-overlay-mobile"></div>
+
+  <button class="hero-arrow hero-arrow-prev" id="hero-prev" aria-label="Slide anterior">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#354ee7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="hero-arrow hero-arrow-next" id="hero-next" aria-label="Siguiente slide">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="#354ee7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="hero-content">
+    <div class="hero-text-wrap">
+      <div class="hero-title-clip">
+        <h1 class="hero-title" id="hero-title">
+          <span id="hero-prefix">Lorem </span><span id="hero-highlight">hasit amet consectetur&#10;adipiscing elit</span>
+        </h1>
+      </div>
+      <p class="hero-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur sed lectus nec tempor. In quis tellus id sem placerat dignissim laoreet at ligula.</p>
+      <a href="#" class="hero-cta" id="hero-cta">Quiero más información</a>
+      <div class="hero-dots" id="hero-dots"></div>
+    </div>
+  </div>
+</section>
+
+<div class="hero-links-bar">
+  <a href="#" class="reveal delay-100">Técnicas Laborales</a>
+  <a href="#" class="reveal delay-200">Pregrados</a>
+  <a href="#" class="reveal delay-300">Especializaciones</a>
+  <a href="#" class="reveal delay-400">Maestrías</a>
+</div>
+
+<!-- ─── FORM SECTION ──────────────────────────────────── -->
+<section id="form-section">
+  <div class="form-wrap">
+    <div class="form-left reveal-left">
+      <p class="form-heading-blue">sit amet</p>
+      <p class="form-heading-dark">Lorem ipsum</p>
+      <p class="form-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+    </div>
+    <div class="form-card reveal-right">
+      <h3>Estudia en CEIPA</h3>
+      <div class="form-grid">
+        <input type="text" placeholder="Nombre" />
+        <input type="text" placeholder="Apellido" />
+        <input type="email" placeholder="E-mail" />
+        <input type="tel" placeholder="Número de celular" />
+        <input type="text" placeholder="Tipo de programa" />
+        <input type="text" placeholder="Departamento en que reside" />
+      </div>
+      <div class="form-bottom">
+        <a href="#" class="btn-outline" style="font-size:18px;">Quiero más información</a>
+        <div class="form-captcha">
+          <img src="src/imports/Home1Desktop/d3bbd2cb1eb4a070f69d2af72ddb083ad99e4c46.png" alt="captcha" />
+        </div>
+      </div>
+      <p class="form-legal">Al enviar acepta los términos de uso. Lee aquí las <span>Política de Tratamiento y Protección de datos y Habeas Data</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── OFERTA ACADÉMICA (sticky · dirigido por scroll) ── -->
+<section id="oferta" role="region" aria-roledescription="carrusel de programas académicos" aria-label="Oferta Académica">
+  <div class="oferta-track" id="oferta-track">
+    <div class="oferta-sticky" id="oferta-sticky">
+      <div id="oferta-bg-layers"></div>
+      <div class="oferta-gradient"></div>
+      <div class="oferta-body">
+        <div class="oferta-left">
+          <div class="oferta-dotbar" id="oferta-dotbar"></div>
+          <div class="oferta-text">
+            <h2 class="oferta-prog-title" id="oferta-title">Pregrados</h2>
+            <p class="oferta-prog-desc" id="oferta-desc">Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.</p>
+            <button class="oferta-prog-btn" id="oferta-cta">Explorar programa</button>
+            <div class="oferta-mobile-controls">
+              <div class="oferta-mobile-dots" id="oferta-mobile-dots"></div>
+              <div class="oferta-mobile-arrows">
+                <button class="oferta-mob-arrow" id="oferta-prev-mobile" aria-label="Anterior">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button class="oferta-mob-arrow" id="oferta-next-mobile" aria-label="Siguiente">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oferta-right">
+          <div class="oferta-card-stack" id="oferta-card-stack"></div>
+          <div class="oferta-right-arrows">
+            <button class="oferta-r-arrow" id="oferta-prev" aria-label="Programa anterior">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C2B2B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="oferta-r-arrow" id="oferta-next" aria-label="Siguiente programa">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C2B2B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── POR QUÉ CEIPA (editorial: título grande sobre la foto) ── -->
+<section id="por-que">
+  <div class="por-que-row">
+    <p class="por-que-title reveal-left">¿Por qué<br>CEIPA?</p>
+    <div class="por-que-media">
+      <div class="por-que-img reveal-scale">
+        <img src="src/imports/image-porqueceipa.png" alt="Por qué CEIPA" />
+      </div>
+      <div class="por-que-caption reveal delay-300">
+        <span>Medellín, Colombia</span>
+        <span>2026</span>
+      </div>
+    </div>
+    <div class="por-que-side reveal-right delay-200">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      <p class="por-que-side-title">Formación con propósito</p>
+      <p class="por-que-side-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIOS (sticky · dirigido por scroll) ─────── -->
+<!-- .test-track es un riel alto: mientras se recorre, .test-sticky queda
+     fijado en pantalla y el testimonio activo avanza según el progreso. -->
+<section id="testimonios" role="region"
+         aria-roledescription="carrusel de testimonios"
+         aria-labelledby="testimonios-title">
+  <div class="test-track" id="test-track">
+    <div class="test-sticky" id="test-sticky">
+      <div class="testimonios-wrap">
+        <div class="testimonios-left">
+          <h2 class="section-title" id="testimonios-title">Testimonios</h2>
+          <p class="section-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+          <p class="test-counter" aria-hidden="true">
+            <span id="test-counter-now">01</span><span class="test-counter-sep">/</span><span id="test-counter-total">03</span>
+          </p>
+          <div class="test-dots" id="test-dots" role="group" aria-label="Ir a un testimonio"></div>
+          <p class="test-hint" id="test-hint" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            Desplázate para ver más
+          </p>
+        </div>
+        <div class="testimonios-list" id="test-list"></div>
+      </div>
+    </div>
+  </div>
+  <p class="sr-only" id="test-status" aria-live="polite"></p>
+</section>
+
+<!-- ─── INNOVATION TEXT ───────────────────────────────── -->
+<section id="innovation">
+  <div class="innovation-track">
+    <p class="innovation-text">Aquí la innovación no es una meta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <p class="innovation-text">Aquí la innovación no es una meta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+  </div>
+</section>
+
+<!-- ─── FINANCIACIÓN ─────────────────────────────────── -->
+<section id="financiacion">
+  <div class="financiacion-inner">
+    <div class="financiacion-text reveal-left">
+      <p class="section-title">Financiación</p>
+      <p class="section-desc" style="margin-bottom:32px;">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+      <a href="#" class="btn-filled">Quiero más información</a>
+    </div>
+    <div class="financiacion-triangle reveal-right">
+      <svg viewBox="0 0 785 395" fill="none" preserveAspectRatio="xMidYMid meet">
+        <path d="M785 0L0 395H785V0Z" fill="#354ee7"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ─── NOVEDADES ────────────────────────────────────── -->
+<section id="novedades">
+  <div class="novedades-header reveal">
+    <div>
+      <p class="section-title">Novedades</p>
+      <p class="section-desc">Entérate de lo último en CEIPA: eventos, logros académicos y todo lo que nos hace únicos.</p>
+    </div>
+    <a href="#" class="ver-todas">Ver todas</a>
+  </div>
+  <div class="novedades-grid">
+    <div class="novedad-card reveal delay-100">
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-acreditacion-internacional.webp" alt="Novedad 1" /></div>
+      <div class="novedad-body">
+        <span class="novedad-tag">Académico</span>
+        <p class="novedad-title">CEIPA obtiene acreditación internacional de alta calidad</p>
+        <p class="novedad-excerpt">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo.</p>
+        <div class="novedad-footer">
+          <span class="novedad-date">10 sep 2026</span>
+          <a href="#" class="novedad-link">Leer más <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="novedad-card reveal delay-200">
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-feria-emprendimiento.webp" alt="Novedad 2" /></div>
+      <div class="novedad-body">
+        <span class="novedad-tag">Eventos</span>
+        <p class="novedad-title">Feria de Emprendimiento CEIPA 2026: inscripciones abiertas</p>
+        <p class="novedad-excerpt">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo.</p>
+        <div class="novedad-footer">
+          <span class="novedad-date">5 sep 2026</span>
+          <a href="#" class="novedad-link">Leer más <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="novedad-card reveal delay-300">
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-concurso-innovacion.webp" alt="Novedad 3" /></div>
+      <div class="novedad-body">
+        <span class="novedad-tag">Investigación</span>
+        <p class="novedad-title">Estudiantes CEIPA ganan primer lugar en concurso nacional de innovación</p>
+        <p class="novedad-excerpt">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo.</p>
+        <div class="novedad-footer">
+          <span class="novedad-date">1 sep 2026</span>
+          <a href="#" class="novedad-link">Leer más <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ACREDITACIONES ────────────────────────────────── -->
+<section id="acreditaciones">
+  <p class="acred-label reveal">ACREDITACIONES Y RECONOCIMIENTOS</p>
+  <div class="acred-track">
+    <div class="acred-grid">
+      <div class="acred-group">
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-acreditacion-alta-calidad.webp" alt="Acreditación Institucional en Alta Calidad" /><span class="acred-seal-name">Acreditación Institucional en Alta Calidad</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-aaa-corantioquia.webp" alt="Sello AAA Corantioquia" /><span class="acred-seal-name">Sello AAA Corantioquia</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-qs-stars.webp" alt="4 estrellas QS Stars" /><span class="acred-seal-name">4 estrellas QS Stars</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2023.webp" alt="EQUAA Awards 2023" /><span class="acred-seal-name">EQUAA Awards 2023</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-lifelong-learning.webp" alt="Sello Lifelong Learning University" /><span class="acred-seal-name">Sello Lifelong Learning University</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-premios-latam-digital.webp" alt="Premios LATAM Digital" /><span class="acred-seal-name">Premios LATAM Digital</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2022.webp" alt="EQUAA Awards 2022" /><span class="acred-seal-name">EQUAA Awards 2022</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2025.webp" alt="EQUAA Awards 2025" /><span class="acred-seal-name">EQUAA Awards 2025</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-the-impact-rankings.webp" alt="The Impact Rankings" /><span class="acred-seal-name">The Impact Rankings</span></div>
+      </div>
+      <div class="acred-group">
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-acreditacion-alta-calidad.webp" alt="Acreditación Institucional en Alta Calidad" /><span class="acred-seal-name">Acreditación Institucional en Alta Calidad</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-aaa-corantioquia.webp" alt="Sello AAA Corantioquia" /><span class="acred-seal-name">Sello AAA Corantioquia</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-qs-stars.webp" alt="4 estrellas QS Stars" /><span class="acred-seal-name">4 estrellas QS Stars</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2023.webp" alt="EQUAA Awards 2023" /><span class="acred-seal-name">EQUAA Awards 2023</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-lifelong-learning.webp" alt="Sello Lifelong Learning University" /><span class="acred-seal-name">Sello Lifelong Learning University</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-premios-latam-digital.webp" alt="Premios LATAM Digital" /><span class="acred-seal-name">Premios LATAM Digital</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2022.webp" alt="EQUAA Awards 2022" /><span class="acred-seal-name">EQUAA Awards 2022</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-equaa-2025.webp" alt="EQUAA Awards 2025" /><span class="acred-seal-name">EQUAA Awards 2025</span></div>
+        <div class="acred-seal"><img src="src/imports/acreditaciones/sello-the-impact-rankings.webp" alt="The Impact Rankings" /><span class="acred-seal-name">The Impact Rankings</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQS ──────────────────────────────────────────── -->
+<section id="faqs">
+  <div class="faqs-inner">
+    <div class="faqs-left reveal-left">
+      <p class="section-title">Preguntas frecuentes</p>
+      <p class="section-desc">Resolvemos las dudas más comunes sobre nuestros programas, admisiones y vida universitaria en CEIPA.</p>
+    </div>
+    <div class="faqs-list reveal-right">
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿Cuáles son los requisitos de admisión?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Para ingresar a CEIPA debes presentar tu diploma de bachiller, documento de identidad, formulario de inscripción diligenciado y el pago de los derechos de inscripción. Algunos programas pueden requerir entrevista o prueba de conocimientos.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿Qué modalidades de estudio ofrece CEIPA?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Ofrecemos modalidad presencial, virtual y a distancia. Nuestros programas están diseñados para que puedas estudiar según tu ritmo de vida, con flexibilidad de horarios y acceso a plataformas digitales de última generación.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿Qué opciones de financiación existen?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Contamos con convenios con el ICETEX, créditos directos con la institución, becas por mérito académico y alianzas con entidades financieras para facilitar el acceso a la educación superior.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿CEIPA está acreditada por el Ministerio de Educación?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Sí. CEIPA cuenta con registro calificado y acreditación de alta calidad otorgados por el Ministerio de Educación Nacional de Colombia, además de reconocimientos internacionales que avalan la excelencia de nuestros programas.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿Puedo homologar materias de otra universidad?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Sí, CEIPA cuenta con un proceso formal de homologación y transferencia. Debes presentar los microcurrículos de las asignaturas cursadas y el comité académico evaluará cuáles aplican para cada programa.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">
+          ¿Qué es el modelo "Powered by Arizona State University"?
+          <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-body">Es una alianza estratégica con Arizona State University (ASU), reconocida como la universidad más innovadora de EE. UU. Esta colaboración nos permite incorporar metodologías, recursos académicos y certificaciones de clase mundial en nuestros programas.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA MATRICÚLATE ────────────────────────────────── -->
+<section id="cta-matricula">
+  <div class="cta-card reveal-scale">
+    <div class="cta-glow-a"></div>
+    <div class="cta-glow-b"></div>
+    <div class="cta-content">
+      <p class="cta-title">¿Listo para dar el siguiente paso?</p>
+      <p class="cta-desc">Inicia hoy tu proceso de admisión y da el primer paso hacia la carrera que quieres. Nuestros asesores te acompañan en cada momento del camino.</p>
+      <a href="#" class="btn-cta">¡Matricúlate ahora!</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────── -->
+<footer id="footer">
+  <div class="footer-main">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div>
+        <img src="src/imports/logo-ceipa-blanco-png.png" alt="CEIPA" class="footer-logo" />
+        <img src="src/imports/footer/certificado-iso-9001-2015.png" alt="Certificado ISO 9001:2015 — Bureau Veritas" class="footer-iso" />
+      </div>
+      <!-- Estudia en CEIPA -->
+      <div class="footer-col">
+        <p class="footer-col-title">Estudia en CEIPA</p>
+        <a href="#">Pregrados</a>
+        <a href="#">Posgrados</a>
+        <a href="#">Educación continua</a>
+        <a href="#">Admisiones</a>
+      </div>
+      <!-- Estudiantes -->
+      <div class="footer-col">
+        <p class="footer-col-title">Estudiantes</p>
+        <a href="#">Portal académico</a>
+        <a href="#">Bienestar universitario</a>
+        <a href="#">Egresados</a>
+      </div>
+      <!-- Newsletter -->
+      <div class="footer-col">
+        <p class="footer-col-title">Recibe novedades</p>
+        <div class="newsletter-row">
+          <input type="email" placeholder="Tu correo electrónico" />
+          <button>Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <p>Fundación Universitaria CEIPA, Institución de Educación Superior VIGILADA MINEDUCACIÓN SNIES 2727</p>
+    <p>Acreditada en Alta Calidad mediante Resolución No. 016362 del 23 de Junio de 2026 por el término de 6 años.</p>
+    <div class="footer-legal-emails">
+      <p>Correo de notificaciones judiciales: <a href="mailto:notificacionesjudiciales@ceipa.edu.co">notificacionesjudiciales@ceipa.edu.co</a></p>
+      <p>Correo de tratamiento de datos: <a href="mailto:tratramientodedatos@ceipa.edu.co">tratramientodedatos@ceipa.edu.co</a></p>
+      <p>Línea Ética: <a href="mailto:lineaetica@ceipa.edu.co">lineaetica@ceipa.edu.co</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CEIPA. Todos los derechos reservados.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Términos de uso</a>
+      <a href="#">Política de tratamiento de datos</a>
+      <a href="#">Habeas Data</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ── Scroll nav shadow ─────────────────────────────── */
+  const nav = document.getElementById('ceipa-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  /* ── Mobile hamburger ──────────────────────────────── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+
+  /* ── Mobile sub-menus ──────────────────────────────── */
+  document.querySelectorAll('.mob-link-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const sub = document.getElementById(targetId);
+      const isOpen = sub.classList.contains('open');
+      // close all
+      document.querySelectorAll('.mob-sub').forEach(s => s.classList.remove('open'));
+      document.querySelectorAll('.mob-link-btn').forEach(b => b.classList.remove('active'));
+      if (!isOpen) {
+        sub.classList.add('open');
+        btn.classList.add('active');
+      }
+    });
+  });
+
+  /* ── Scroll reveal ─────────────────────────────────── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale')
+    .forEach(el => revealObserver.observe(el));
+
+  /* ── HERO slider (foto de fondo completa) ────────────── */
+  const heroSlides = [
+    {
+      prefix: 'Lorem ', highlight: 'hasit amet consectetur\nadipiscing elit',
+      dark: false, glassBtn: false,
+      overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
+      overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.88) 0%, rgba(255,255,255,.62) 40%, rgba(255,255,255,.25) 62%, transparent 85%)',
+    },
+    {
+      prefix: 'La ', highlight: 'innovación que\ntransforma vidas',
+      dark: true, glassBtn: true,
+      overlay: 'linear-gradient(to right, rgba(0,0,0,.52) 0%, rgba(0,0,0,.22) 58%, transparent 100%)',
+      overlayMobile: 'linear-gradient(to bottom, rgba(6,13,55,.82) 0%, rgba(6,13,55,.55) 40%, rgba(6,13,55,.22) 62%, transparent 85%)',
+    },
+    {
+      prefix: 'La ', highlight: 'excelencia académica\nte espera hoy',
+      dark: true, glassBtn: true,
+      overlay: 'linear-gradient(to right, rgba(6,13,55,.70) 0%, rgba(6,13,55,.35) 55%, transparent 100%)',
+      overlayMobile: 'linear-gradient(to bottom, rgba(6,13,55,.82) 0%, rgba(6,13,55,.55) 40%, rgba(6,13,55,.22) 62%, transparent 85%)',
+    },
+  ];
+  let heroActive = 0;
+  const heroPrefix    = document.getElementById('hero-prefix');
+  const heroHighlight = document.getElementById('hero-highlight');
+  const heroDots      = document.getElementById('hero-dots');
+  const heroOverlay   = document.getElementById('hero-overlay');
+  const heroOverlayM  = document.getElementById('hero-overlay-mobile');
+  const heroCta       = document.getElementById('hero-cta');
+  const heroBgs       = document.querySelectorAll('.hero-bg');
+  const heroPrev      = document.getElementById('hero-prev');
+  const heroNext      = document.getElementById('hero-next');
+
+  function buildHeroDots() {
+    heroDots.innerHTML = '';
+    heroSlides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'hero-slide-dot' + (i === heroActive ? ' active' : '') + (heroSlides[heroActive].dark ? ' dark' : '');
+      d.setAttribute('aria-label', 'Slide ' + (i + 1));
+      d.addEventListener('click', () => goHero(i));
+      heroDots.appendChild(d);
+    });
+  }
+  function goHero(idx) {
+    heroActive = idx;
+    const s = heroSlides[idx];
+    heroPrefix.textContent    = s.prefix;
+    heroHighlight.textContent = s.highlight;
+    heroOverlay.style.background  = s.overlay;
+    heroOverlayM.style.background = s.overlayMobile;
+    heroPrefix.style.color    = s.dark ? '#fff' : '#111';
+    heroHighlight.style.color = s.dark ? '#7b8fff' : 'var(--blue)';
+    document.querySelector('.hero-desc').style.color = s.dark ? 'rgba(255,255,255,.9)' : '#111';
+    heroCta.classList.toggle('glass', !!s.glassBtn);
+    heroCta.style.borderColor = s.glassBtn ? '' : 'var(--blue)';
+    heroCta.style.color = s.glassBtn ? '' : 'var(--text-dark)';
+    [heroPrev, heroNext].forEach(btn => {
+      btn.classList.toggle('dark', s.dark);
+      btn.querySelector('path').setAttribute('stroke', s.dark ? '#fff' : '#354ee7');
+    });
+    heroBgs.forEach(img => img.classList.toggle('active', img.dataset.slide == idx));
+    document.querySelectorAll('.hero-slide-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+      d.classList.toggle('dark', s.dark);
+    });
+  }
+  heroPrev.addEventListener('click', () => goHero((heroActive - 1 + heroSlides.length) % heroSlides.length));
+  heroNext.addEventListener('click', () => goHero((heroActive + 1) % heroSlides.length));
+  buildHeroDots();
+  goHero(0);
+  setInterval(() => goHero((heroActive + 1) % heroSlides.length), 4000);
+
+  /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
+  const ofertaSlides = [
+    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/image-8.png', card: 'src/imports/image-9.png' },
+    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/image-10.png', card: 'src/imports/image-11.png' },
+    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/image-6.png', card: 'src/imports/image-7.png' },
+    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/image-15.png', card: 'src/imports/image-14.png' },
+    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/image-12.png', card: 'src/imports/image-13.png' },
+  ];
+  let ofertaActive = 0, ofertaAnimating = false;
+  const ofertaSection   = document.getElementById('oferta');
+  const ofertaTrack     = document.getElementById('oferta-track');
+  const ofertaSticky    = document.getElementById('oferta-sticky');
+  const ofertaBgLayers  = document.getElementById('oferta-bg-layers');
+  const ofertaTitle     = document.getElementById('oferta-title');
+  const ofertaDesc      = document.getElementById('oferta-desc');
+  const ofertaDotbar    = document.getElementById('oferta-dotbar');
+  const ofertaMobDots   = document.getElementById('oferta-mobile-dots');
+  const ofertaCardStack = document.getElementById('oferta-card-stack');
+
+  const ofertaN = ofertaSlides.length;
+  const ofertaReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let ofertaScrollDriven = false;
+
+  /* Fondos: una capa por slide, construida una sola vez */
+  ofertaSlides.forEach((s, i) => {
+    const layer = document.createElement('div');
+    layer.className = 'oferta-bg-layer' + (i === 0 ? ' active' : '');
+    layer.innerHTML = `<img src="${s.bg}" alt="" aria-hidden="true">`;
+    ofertaBgLayers.appendChild(layer);
+  });
+  const ofertaBgLayerEls = ofertaBgLayers.querySelectorAll('.oferta-bg-layer');
+
+  /* Barra de puntos numerada (desktop) */
+  ofertaSlides.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'oferta-dot-btn' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Programa ${i + 1} de ${ofertaN}`);
+    btn.innerHTML = `<span>${i + 1}</span>`;
+    btn.addEventListener('click', () => goOfertaTo(i));
+    ofertaDotbar.appendChild(btn);
+  });
+  const ofertaDotEls = ofertaDotbar.querySelectorAll('.oferta-dot-btn');
+
+  /* Puntos móviles */
+  ofertaSlides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'oferta-mob-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Programa ${i + 1}`);
+    btn.addEventListener('click', () => goOfertaTo(i));
+    ofertaMobDots.appendChild(btn);
+  });
+  const ofertaMobDotEls = ofertaMobDots.querySelectorAll('.oferta-mob-dot');
+
+  function buildCardStack() {
+    ofertaCardStack.innerHTML = '';
+    const CARD_W = 256, GAP = 20;
+    for (let pos = 0; pos < 4; pos++) {
+      const idx = (ofertaActive + pos) % ofertaN;
+      const s = ofertaSlides[idx];
+      const isActive = pos === 0;
+      const card = document.createElement('div');
+      card.className = 'oferta-card' + (isActive ? ' is-active' : '');
+      card.style.left = (pos * (CARD_W + GAP)) + 'px';
+      card.innerHTML = `
+        <img src="${s.card}" alt="${s.title}">
+        <div class="oferta-card-shade"></div>
+        <div class="oferta-card-info">
+          <p class="oferta-card-title">${s.title}</p>
+          <p class="oferta-card-tag">${s.tag}</p>
+        </div>`;
+      if (!isActive) card.addEventListener('click', () => goOfertaTo((ofertaActive + 1) % ofertaN));
+      ofertaCardStack.appendChild(card);
+    }
+  }
+  buildCardStack();
+
+  function goOferta(idx) {
+    if (ofertaAnimating || idx === ofertaActive) return;
+    ofertaAnimating = true;
+    ofertaActive = idx;
+    const s = ofertaSlides[idx];
+
+    ofertaBgLayerEls.forEach((el, i) => el.classList.toggle('active', i === idx));
+
+    ofertaTitle.classList.add('oferta-fade');
+    ofertaDesc.classList.add('oferta-fade');
+    setTimeout(() => {
+      ofertaTitle.textContent = s.title;
+      ofertaDesc.textContent  = s.desc;
+      ofertaTitle.classList.remove('oferta-fade');
+      ofertaDesc.classList.remove('oferta-fade');
+    }, 250);
+
+    ofertaDotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    ofertaMobDotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    buildCardStack();
+
+    setTimeout(() => { ofertaAnimating = false; }, 550);
+  }
+
+  function goOfertaTo(idx) {
+    if (!ofertaScrollDriven) { goOferta(idx); return; }
+    const total = ofertaTrack.offsetHeight - window.innerHeight;
+    if (total <= 0) { goOferta(idx); return; }
+    const trackTop = ofertaTrack.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: Math.round(trackTop + total * ((idx + 0.5) / ofertaN)),
+      behavior: ofertaReduceMotion.matches ? 'auto' : 'smooth'
+    });
+  }
+
+  document.getElementById('oferta-prev').addEventListener('click', () => {
+    goOfertaTo((ofertaActive - 1 + ofertaN) % ofertaN);
+  });
+  document.getElementById('oferta-next').addEventListener('click', () => {
+    goOfertaTo((ofertaActive + 1) % ofertaN);
+  });
+  document.getElementById('oferta-prev-mobile').addEventListener('click', () => {
+    goOfertaTo((ofertaActive - 1 + ofertaN) % ofertaN);
+  });
+  document.getElementById('oferta-next-mobile').addEventListener('click', () => {
+    goOfertaTo((ofertaActive + 1) % ofertaN);
+  });
+
+  let ofertaTicking = false;
+  function readOfertaScroll() {
+    ofertaTicking = false;
+    if (!ofertaScrollDriven) return;
+    const total = ofertaTrack.offsetHeight - window.innerHeight;
+    if (total <= 0) return;
+    const progress = Math.min(Math.max(-ofertaTrack.getBoundingClientRect().top / total, 0), 1);
+    goOferta(Math.min(ofertaN - 1, Math.floor(progress * ofertaN)));
+  }
+  function onOfertaScroll() {
+    if (!ofertaTicking) { ofertaTicking = true; requestAnimationFrame(readOfertaScroll); }
+  }
+  function measureOferta() {
+    ofertaScrollDriven = !ofertaReduceMotion.matches;
+    ofertaSection.classList.toggle('is-static', !ofertaScrollDriven);
+    readOfertaScroll();
+  }
+  let ofertaResizeTimer;
+  function onOfertaResize() {
+    clearTimeout(ofertaResizeTimer);
+    ofertaResizeTimer = setTimeout(measureOferta, 150);
+  }
+  measureOferta();
+  window.addEventListener('scroll', onOfertaScroll, { passive: true });
+  window.addEventListener('resize', onOfertaResize);
+  ofertaReduceMotion.addEventListener('change', measureOferta);
+
+  /* ── TESTIMONIOS (sticky · dirigido por scroll) ─────── */
+  const testimonials = [
+    { name: 'María García',  role: 'Egresada Pregrado',  text: 'Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna aliquam.', img: 'src/imports/testimonios/maria-garcia.webp' },
+    { name: 'Carlos López',  role: 'Egresado Posgrado',  text: 'La formación en CEIPA transformó mi carrera profesional. El enfoque práctico y empresarial marca la diferencia desde el primer semestre.',              img: 'src/imports/testimonios/carlos-lopez.webp' },
+    { name: 'Ana Martínez',  role: 'Estudiante activa',  text: 'Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo.',                          img: 'src/imports/testimonios/ana-martinez.webp' },
+  ];
+
+  const testSection = document.getElementById('testimonios');
+  const testTrack   = document.getElementById('test-track');
+  const testSticky  = document.getElementById('test-sticky');
+  const testList    = document.getElementById('test-list');
+  const testDots    = document.getElementById('test-dots');
+  const testStatus  = document.getElementById('test-status');
+  const testHint    = document.getElementById('test-hint');
+  const testNow     = document.getElementById('test-counter-now');
+  const testTotal   = document.getElementById('test-counter-total');
+
+  const N = testimonials.length;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const pad = v => String(v).padStart(2, '0');
+
+  const cards = [], dots = [];
+  let testActive = -1;
+  let scrollDriven = false;
+
+  testSection.style.setProperty('--test-count', N);
+  testTotal.textContent = pad(N);
+
+  /* Se construye UNA sola vez: así las transiciones CSS sí se ejecutan
+     y no se pierde el foco del teclado al cambiar de testimonio. */
+  testimonials.forEach((t, i) => {
+    const card = document.createElement('article');
+    card.className = 'test-card';
+    card.innerHTML =
+      '<div class="test-avatar"><img alt="" loading="lazy" width="76" height="76"></div>' +
+      '<div class="test-body"><p class="test-text"></p><p class="test-name"></p></div>';
+    card.querySelector('img').src = t.img;              // textContent/src: sin innerHTML con datos
+    card.querySelector('.test-text').textContent = t.text;
+    card.querySelector('.test-name').textContent = t.name + ' — ' + t.role;
+    card.addEventListener('click', () => goTest(i));
+    testList.appendChild(card);
+    cards.push(card);
+
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'test-dot';
+    dot.tabIndex = i === 0 ? 0 : -1;                    // roving tabindex
+    dot.setAttribute('aria-label', 'Testimonio ' + (i + 1) + ' de ' + N + ': ' + t.name);
+    dot.addEventListener('click', () => { goTest(i); dot.focus(); });
+    dot.addEventListener('keydown', onDotKey);
+    testDots.appendChild(dot);
+    dots.push(dot);
+  });
+
+  function setActive(i) {
+    if (i === testActive) return;
+    testActive = i;
+    cards.forEach((c, k) => {
+      const on = k === i;
+      c.classList.toggle('is-active', on);
+      c.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+    dots.forEach((d, k) => {
+      const on = k === i;
+      d.classList.toggle('is-active', on);
+      d.setAttribute('aria-current', on ? 'true' : 'false');
+      d.tabIndex = on ? 0 : -1;
+    });
+    testNow.textContent = pad(i + 1);
+    const t = testimonials[i];
+    testStatus.textContent = 'Testimonio ' + (i + 1) + ' de ' + N + ': ' + t.name + ', ' + t.role + '.';
+    if (testHint) testHint.classList.toggle('is-done', i === N - 1);
+  }
+
+  /* Ir a un testimonio = desplazar el scroll al punto medio de su tramo.
+     En modo estático o con movimiento reducido, se activa sin mover nada. */
+  function goTest(i) {
+    if (!scrollDriven) { setActive(i); return; }
+    const total = testTrack.offsetHeight - window.innerHeight;
+    if (total <= 0) { setActive(i); return; }
+    const trackTop = testTrack.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: Math.round(trackTop + total * ((i + 0.5) / N)),
+      behavior: reduceMotion.matches ? 'auto' : 'smooth'
+    });
+  }
+
+  let ticking = false;
+  function readScroll() {
+    ticking = false;
+    if (!scrollDriven) return;
+    const total = testTrack.offsetHeight - window.innerHeight;
+    if (total <= 0) return;
+    const progress = Math.min(Math.max(-testTrack.getBoundingClientRect().top / total, 0), 1);
+    setActive(Math.min(N - 1, Math.floor(progress * N)));
+  }
+  function onTestScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(readScroll); }
+  }
+
+  function onDotKey(e) {
+    const step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+    let next = null;
+    if (step) next = (testActive + step + N) % N;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End')  next = N - 1;
+    if (next === null) return;
+    e.preventDefault();
+    goTest(next);
+    dots[next].tabIndex = 0;
+    dots[next].focus();
+  }
+
+  /* Si el bloque no cabe en una pantalla (móviles bajos, zoom alto, texto
+     grande) se degrada a lista estática en vez de romper el sticky. */
+  function measureTest() {
+    const wrap = testSticky.querySelector('.testimonios-wrap');
+    testSection.classList.remove('is-static');
+    const cs = getComputedStyle(testSticky);
+    const chrome = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    const fits = wrap.getBoundingClientRect().height + chrome <= window.innerHeight;
+    scrollDriven = fits && !reduceMotion.matches;
+    if (!scrollDriven) testSection.classList.add('is-static');
+    readScroll();
+  }
+
+  let resizeTimer;
+  function onTestResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measureTest, 150);
+  }
+
+  setActive(0);
+  measureTest();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureTest);
+  window.addEventListener('scroll', onTestScroll, { passive: true });
+  window.addEventListener('resize', onTestResize);
+  reduceMotion.addEventListener('change', measureTest);
+
+  /* ── FAQs acordeón ─────────────────────────────────── */
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

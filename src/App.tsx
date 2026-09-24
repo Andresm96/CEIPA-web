@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback, type KeyboardEvent } from "react";
 import imgCeipaBlue from "./imports/logo-ceipa-azul-png.png";
-import imgCeipaWhite from "./imports/logo-ceipa-blanco-png.png";
 import imgSlide1Mobile from "./imports/image-1.png";
 import imgSlide1Desktop from "./imports/image-2.png";
 import imgSlide2Mobile from "./imports/Imagen_de_Codex_17_sept_2026__10_50_11.png";
@@ -18,6 +17,9 @@ import imgMaestriasBg from "./imports/image-12.png";
 import imgMaestríasCard from "./imports/image-13.png";
 import imgEdContBg from "./imports/image-15.png";
 import imgEdContCard from "./imports/image-14.png";
+import imgIdiomasBg from "./imports/image-16.png";
+// Reemplaza este import por tu propio GIF/imagen para cambiar el visual de la sección Financiación
+import imgFinanciacionVisual from "./imports/financiacion-visual.svg";
 import imgSelloAltaCalidad from "./imports/acreditaciones/sello-acreditacion-alta-calidad.webp";
 import imgSelloAAA from "./imports/acreditaciones/sello-aaa-corantioquia.webp";
 import imgSelloQsStars from "./imports/acreditaciones/sello-qs-stars.webp";
@@ -66,13 +68,23 @@ function Nav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { label: "Estudia en CEIPA", items: ["Pregrados", "Posgrados", "Educación continua", "Admisiones"] },
+  const navLinks: { label: string; items: (string | { label: string; children: string[] })[] }[] = [
+    {
+      label: "Estudia en CEIPA",
+      items: [
+        { label: "Programas", children: ["Pregrados", "Especializaciones", "Maestrías", "Técnicos laborales", "Educación continua", "SENA", "Idiomas"] },
+        "FCF",
+        "Inscripción",
+        "Financiación",
+      ],
+    },
     { label: "Estudiantes", items: ["Portal académico", "Bienestar universitario", "Egresados"] },
     { label: "CEIPA", items: ["Institución", "Entorno empresarial", "Actualidad", "Contacto"] },
     { label: "Entorno empresarial", items: ["Empresas aliadas", "Formación corporativa"] },
     { label: "Actualidad", items: ["Noticias", "Eventos", "Blog"] },
   ];
+
+  const [mobileSubOpen, setMobileSubOpen] = useState<string | null>(null);
 
   return (
     <nav
@@ -96,15 +108,40 @@ function Nav() {
                 </svg>
               </button>
               <div className="absolute top-full left-0 mt-2 bg-white shadow-xl rounded-2xl py-3 min-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                {link.items.map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="block px-5 py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-700 hover:text-[#354ee7] hover:bg-blue-50 transition-colors"
-                  >
-                    {item}
-                  </a>
-                ))}
+                {link.items.map((item) =>
+                  typeof item === "string" ? (
+                    <a
+                      key={item}
+                      href="#"
+                      className="block px-5 py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-700 hover:text-[#354ee7] hover:bg-blue-50 transition-colors"
+                    >
+                      {item}
+                    </a>
+                  ) : (
+                    <div key={item.label} className="relative group/flyout">
+                      <div
+                        className="flex items-center justify-between gap-3 px-5 py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-700 hover:text-[#354ee7] hover:bg-blue-50 transition-colors cursor-default"
+                        style={{ fontVariationSettings: '"wdth" 100' }}
+                      >
+                        {item.label}
+                        <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                      <div className="absolute top-0 left-full ml-2 bg-white shadow-xl rounded-2xl py-3 min-w-[200px] opacity-0 invisible group-hover/flyout:opacity-100 group-hover/flyout:visible transition-all duration-200 z-50">
+                        {item.children.map((child) => (
+                          <a
+                            key={child}
+                            href="#"
+                            className="block px-5 py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-700 hover:text-[#354ee7] hover:bg-blue-50 transition-colors"
+                          >
+                            {child}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           ))}
@@ -148,15 +185,45 @@ function Nav() {
                 </button>
                 {activeDropdown === link.label && (
                   <div className="bg-gray-50 px-5 pb-2">
-                    {link.items.map((item) => (
-                      <a
-                        key={item}
-                        href="#"
-                        className="block py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-600 hover:text-[#354ee7] transition-colors border-b border-gray-100 last:border-0"
-                      >
-                        {item}
-                      </a>
-                    ))}
+                    {link.items.map((item) =>
+                      typeof item === "string" ? (
+                        <a
+                          key={item}
+                          href="#"
+                          className="block py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-600 hover:text-[#354ee7] transition-colors border-b border-gray-100 last:border-0"
+                        >
+                          {item}
+                        </a>
+                      ) : (
+                        <div key={item.label} className="border-b border-gray-100">
+                          <button
+                            onClick={() => setMobileSubOpen(mobileSubOpen === item.label ? null : item.label)}
+                            className="w-full flex items-center justify-between py-2 text-[14px] font-['Archivo:Regular',sans-serif] text-gray-600 hover:text-[#354ee7] transition-colors"
+                          >
+                            {item.label}
+                            <svg
+                              className={`w-3.5 h-3.5 transition-transform duration-200 ${mobileSubOpen === item.label ? "rotate-180" : ""}`}
+                              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                          {mobileSubOpen === item.label && (
+                            <div className="pb-2">
+                              {item.children.map((child) => (
+                                <a
+                                  key={child}
+                                  href="#"
+                                  className="block pl-4 py-2 text-[13px] italic font-['Archivo:Regular',sans-serif] text-gray-600 hover:text-[#354ee7] transition-colors"
+                                >
+                                  {child}
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
               </div>
@@ -282,7 +349,7 @@ function Hero() {
           {/* Text — left half on desktop, full width on mobile */}
           <div className="w-full md:max-w-[52%]">
             {/* Fixed height so slides never shift layout */}
-            <div className="h-[180px] md:h-[260px] overflow-hidden mb-6">
+            <div className="h-[165px] md:h-[260px] overflow-hidden mb-3 md:mb-6">
               <h1
                 className="hero-title font-['Archivo:Regular',sans-serif] text-[38px] md:text-[64px] leading-[1.05]"
                 style={{ fontVariationSettings: '"wdth" 100', whiteSpace: "pre-line" }}
@@ -292,7 +359,7 @@ function Hero() {
               </h1>
             </div>
             <p
-              className={`hero-sub font-['Archivo:ExtraLight',sans-serif] text-[17px] md:text-[20px] leading-[1.44] max-w-[560px] mb-8 ${slides[currentSlide].dark ? "text-white/90" : "text-black"}`}
+              className={`hero-sub font-['Archivo:ExtraLight',sans-serif] text-[17px] md:text-[20px] leading-[1.44] max-w-[560px] mb-4 md:mb-8 ${slides[currentSlide].dark ? "text-white/90" : "text-black"}`}
               style={{ fontVariationSettings: '"wdth" 100' }}
             >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur sed lectus nec tempor. In quis tellus id sem placerat dignissim laoreet at ligula.
@@ -333,18 +400,6 @@ function Hero() {
         </div>
       </div>
     </section>
-    <div className="bg-white px-6 md:px-16 py-5 flex flex-wrap justify-center md:justify-around items-center gap-x-8 gap-y-4 border-t border-gray-100 shadow-sm">
-      {["Técnicas Laborales", "Pregrados", "Especializaciones", "Maestrías"].map((label, i) => (
-        <a
-          key={label}
-          href="#"
-          className={`reveal delay-${(i + 1) * 100} font-['Archivo:SemiBold',sans-serif] font-semibold text-[15px] md:text-[17px] text-[#354ee7] hover:text-[#2a3ec0] transition-colors whitespace-nowrap`}
-          style={{ fontVariationSettings: '"wdth" 100' }}
-        >
-          {label}
-        </a>
-      ))}
-    </div>
     </>
   );
 }
@@ -728,6 +783,13 @@ function OfertaAcademica() {
       bg: imgMaestriasBg,
       card: imgMaestríasCard,
     },
+    {
+      title: "Centro de Idiomas",
+      tag: "Inglés & Bilingüismo",
+      desc: "Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.",
+      bg: imgIdiomasBg,
+      card: imgIdiomasBg,
+    },
   ];
 
   const N = slides.length;
@@ -743,9 +805,22 @@ function OfertaAcademica() {
   const trackRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const scrollDrivenRef = useRef(false);
+  const mobThumbsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { activeRef.current = active; }, [active]);
   useEffect(() => { goingRef.current = going; }, [going]);
+
+  // Keeps the mobile thumbnail strip in sync: scrolls the active thumbnail into view
+  // whenever `active` changes, whether from a click or from scrolling through the section.
+  // Scrolls the strip's own scrollLeft directly (not scrollIntoView) so this never
+  // fights the page's vertical scroll-jack while the section is pinned.
+  useEffect(() => {
+    const container = mobThumbsRef.current;
+    const activeThumb = container?.children[active] as HTMLElement | undefined;
+    if (!container || !activeThumb) return;
+    const target = activeThumb.offsetLeft - (container.clientWidth - activeThumb.offsetWidth) / 2;
+    container.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+  }, [active]);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 400);
@@ -874,10 +949,10 @@ function OfertaAcademica() {
               aria-hidden
               className="w-full h-full object-cover"
               style={{
-                transform: i === active ? "scale(1)" : "scale(1.1)",
+                transform: i === active ? "scale(1.04)" : "scale(1.1)",
                 transition: "transform 1s ease-in-out",
                 animation: i === active ? "oferta-bgEnter 0.5s linear forwards" : undefined,
-                filter: "blur(2px)",
+                filter: "blur(8px)",
               }}
             />
           </div>
@@ -1047,6 +1122,45 @@ function OfertaAcademica() {
             </div>
           </div>
 
+          {/* Mobile thumbnail strip — horizontal scroll, one thumbnail per program */}
+          <div
+            ref={mobThumbsRef}
+            className="md:hidden flex gap-3 overflow-x-auto"
+            style={{
+              paddingLeft: "clamp(24px,10%,144px)",
+              paddingRight: "clamp(16px,4%,32px)",
+              paddingBottom: "clamp(32px,4vh,48px)",
+              opacity: loaded ? 1 : 0,
+              transition: "opacity 0.8s ease-in-out",
+            }}
+          >
+            {slides.map((sl, i) => (
+              <button
+                key={sl.title}
+                onClick={() => goTo(i)}
+                aria-label={sl.title}
+                aria-current={i === active}
+                className="relative flex-shrink-0 overflow-hidden rounded-lg"
+                style={{
+                  width: "170px",
+                  height: "210px",
+                  border: i === active ? "2px solid #354EE7" : "2px solid transparent",
+                  cursor: "pointer",
+                  transition: "border-color 0.3s ease-in-out",
+                }}
+              >
+                <img src={sl.card} alt={sl.title} className="w-full h-full object-cover" />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(20deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)" }} />
+                <span
+                  className="font-['Archivo:SemiBold',sans-serif] text-white text-left"
+                  style={{ position: "absolute", bottom: "14px", left: "14px", right: "14px", fontSize: "16px", lineHeight: "1.25", fontVariationSettings: '"wdth" 100' }}
+                >
+                  {sl.title}
+                </span>
+              </button>
+            ))}
+          </div>
+
           {/* RIGHT column — hidden on mobile, 50% on desktop */}
           <div
             className="hidden md:flex flex-col justify-center overflow-hidden"
@@ -1136,51 +1250,46 @@ function OfertaAcademica() {
 function PorQueCeipa() {
   return (
     <section className="py-16 md:py-24 max-w-[1440px] mx-auto px-6 md:px-16">
-      <div className="flex flex-col lg:flex-row lg:items-end">
-        {/* Big stacked title — overlaps the photo's left edge on large screens */}
-        <div className="reveal-left relative z-10 flex-shrink-0 pb-4 lg:pb-8 lg:mr-[-72px] xl:mr-[-110px]">
-          <p
-            className="font-['Archivo:Bold',sans-serif] font-bold text-[#354ee7] text-[48px] md:text-[72px] lg:text-[84px] leading-[0.92] tracking-tight"
-            style={{ fontVariationSettings: '"wdth" 100' }}
-          >
-            ¿Por qué
-            <br />
-            CEIPA?
-          </p>
+      <div className="flex flex-col md:flex-row md:items-stretch">
+        {/* Cropped photo panel */}
+        <div className="reveal-scale relative z-0 h-[320px] md:h-auto md:w-[55%] rounded-2xl overflow-hidden">
+          <img alt="Por qué CEIPA" className="w-full h-full object-cover" src={imgPorQueCeipa} />
         </div>
 
-        {/* Photo, desaturated, with location/year captions below */}
-        <div className="flex-1 min-w-0">
-          <div className="reveal-scale h-[280px] md:h-[420px] lg:h-[560px] rounded-2xl overflow-hidden">
-            <img alt="Por qué CEIPA" className="w-full h-full object-cover grayscale" src={imgPorQueCeipa} />
-          </div>
-          <div className="reveal delay-300 flex items-center justify-between mt-3">
-            <span className="font-['Archivo:Regular',sans-serif] text-[13px] text-black/60" style={{ fontVariationSettings: '"wdth" 100' }}>
-              Medellín, Colombia
-            </span>
-            <span className="font-['Archivo:Regular',sans-serif] text-[13px] text-black/60" style={{ fontVariationSettings: '"wdth" 100' }}>
-              2026
-            </span>
-          </div>
-        </div>
-
-        {/* Arrow + short pitch, off to the side */}
-        <div className="reveal-right delay-200 lg:w-[260px] xl:w-[300px] flex-shrink-0 pt-8 lg:pt-0 lg:pl-10 lg:pb-10 flex flex-col">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#354ee7" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        {/* Floating solid-color card, overlapping the photo on desktop */}
+        <div className="reveal-right delay-200 relative z-10 -mt-10 mx-4 md:mx-0 md:mt-0 md:w-[48%] md:-ml-16 bg-[#354ee7] rounded-2xl shadow-2xl p-8 md:p-12 flex flex-col justify-center">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="mb-5">
             <path d="M7 17L17 7M7 7h10v10" />
           </svg>
-          <p
-            className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[#060d37] text-[20px] leading-[1.2] mt-4 mb-2"
+          <span
+            className="font-['Archivo:SemiBold',sans-serif] font-semibold text-white/70 text-[13px] uppercase tracking-wide mb-3"
             style={{ fontVariationSettings: '"wdth" 100' }}
           >
             Formación con propósito
-          </p>
+          </span>
+          <h2
+            className="font-['Archivo:Bold',sans-serif] font-bold text-white text-[34px] md:text-[44px] lg:text-[52px] leading-[0.98] tracking-tight mb-5"
+            style={{ fontVariationSettings: '"wdth" 100' }}
+          >
+            ¿Por qué CEIPA?
+          </h2>
           <p
-            className="font-['Archivo:Regular',sans-serif] text-black/70 text-[14px] leading-[1.6]"
+            className="font-['Archivo:ExtraLight',sans-serif] text-white/85 text-[16px] leading-[1.6] mb-8"
             style={{ fontVariationSettings: '"wdth" 100' }}
           >
             Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna
           </p>
+          <a
+            href="#"
+            className="group flex items-center gap-2 mt-auto pt-6 border-t border-white/20 w-fit"
+          >
+            <span className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[14px] text-white" style={{ fontVariationSettings: '"wdth" 100' }}>
+              Conoce más de CEIPA
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
         </div>
       </div>
     </section>
@@ -1336,48 +1445,40 @@ function Testimonios() {
   );
 }
 
-// Innovation text section
-function InnovationText() {
-  return (
-    <section className="py-10 overflow-hidden">
-      <div className="flex">
-        <div className="innovation-scroll flex gap-8 items-center">
-          {[1, 2].map((repeat) => (
-            <p
-              key={repeat}
-              className="font-['Ancizar_Sans:Thin',sans-serif] font-thin text-[#354ee7] text-[100px] md:text-[160px] leading-[0.83] opacity-36 whitespace-nowrap"
-            >
-              Aquí la innovación no es una meta&nbsp;&nbsp;&nbsp;&nbsp;
-            </p>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // Financiación section
 function Financiacion() {
   return (
-    <section className="py-16 md:py-20 bg-[#d9d9d9] relative overflow-hidden">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 flex flex-col lg:flex-row gap-8 items-center">
-        <div className="reveal-left flex-1 max-w-[700px] z-10">
-          <p className="font-['Archivo:Bold',sans-serif] font-bold text-[#354ee7] text-[52px] md:text-[60px] leading-[0.83] mb-4" style={{ fontVariationSettings: '"wdth" 100' }}>
-            Financiación
-          </p>
-          <p className="font-['Archivo:ExtraLight',sans-serif] font-extralight text-[18px] md:text-[20px] text-black leading-[1.44] max-w-[665px] mb-8" style={{ fontVariationSettings: '"wdth" 100' }}>
-            Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna
-          </p>
-          <button className="bg-[#354ee7] text-white font-['Archivo:Regular',sans-serif] text-[18px] px-8 py-3 rounded-full hover:bg-[#2a3ec0] transition-all duration-300" style={{ fontVariationSettings: '"wdth" 100' }}>
-            Quiero más información
-          </button>
-        </div>
+    <section className="py-10 md:py-16 max-w-[1440px] mx-auto px-4 md:px-16">
+      <div className="reveal-scale relative overflow-hidden rounded-[32px] md:rounded-[40px] bg-gradient-to-br from-[#eef0f5] to-[#dde1ea] border-l-4 border-[#354ee7]">
+        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6 lg:gap-10 pl-6 md:pl-14 py-12 md:py-16">
+          <div className="flex-1 max-w-[560px] px-6 lg:px-0">
+            <p
+              className="reveal-left font-['Archivo:Bold',sans-serif] font-bold text-[#060d37] text-[40px] md:text-[52px] leading-[1.05] mb-4"
+              style={{ fontVariationSettings: '"wdth" 100' }}
+            >
+              Financiación
+            </p>
+            <p
+              className="reveal-left delay-100 font-['Archivo:Regular',sans-serif] text-[15px] md:text-[16px] text-black/60 leading-[1.6] max-w-[440px] mb-8"
+              style={{ fontVariationSettings: '"wdth" 100' }}
+            >
+              Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna
+            </p>
+            <div className="reveal-left delay-200 w-fit">
+              <button
+                className="bg-[#060d37] text-white font-['Archivo:SemiBold',sans-serif] text-[14px] px-6 py-2.5 rounded-full hover:bg-[#354ee7] transition-all duration-300"
+                style={{ fontVariationSettings: '"wdth" 100' }}
+              >
+                Quiero más información
+              </button>
+            </div>
+          </div>
 
-        {/* Blue triangle decoration */}
-        <div className="reveal-right flex-1 relative h-[300px] w-full">
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 785 395" fill="none" preserveAspectRatio="xMidYMid meet">
-            <path d="M785 0L0 395H785V0Z" fill="#354ee7" />
-          </svg>
+          {/* Visual — reemplaza `imgFinanciacionVisual` (import al inicio del archivo) por tu propio GIF/imagen.
+              Sin padding/max-width a la derecha: la imagen llega hasta el borde derecho del contenedor. */}
+          <div className="reveal-right delay-300 flex-1 self-stretch flex items-center justify-end h-[260px] md:h-[340px] w-full">
+            <img src={imgFinanciacionVisual} alt="" className="h-full w-auto max-w-full object-contain" />
+          </div>
         </div>
       </div>
     </section>
@@ -1583,26 +1684,26 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-[#120957] text-white">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-12 border-b border-white/12">
+    <footer className="bg-[#d9d9d9] text-[#060d37]">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-12 border-b border-black/10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand column */}
           <div>
-            <img alt="CEIPA" className="h-10 mb-4 object-contain" src={imgCeipaWhite} />
+            <img alt="CEIPA" className="h-10 mb-4 object-contain" src={imgCeipaBlue} />
             <img alt="Certificado ISO 9001:2015 — Bureau Veritas" className="h-[90px] object-contain bg-white rounded-lg p-2" src={imgCertificadoIso} />
           </div>
 
           {/* Link columns */}
           {footerLinks.slice(0, 3).map((col) => (
             <div key={col.title}>
-              <p className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[13px] text-white mb-4" style={{ fontVariationSettings: '"wdth" 100' }}>
+              <p className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[13px] text-[#060d37] mb-4" style={{ fontVariationSettings: '"wdth" 100' }}>
                 {col.title}
               </p>
               {col.links.map((link) => (
                 <a
                   key={link}
                   href="#"
-                  className="block font-['Archivo:Regular',sans-serif] text-[#a5a1e8] text-[14px] mb-3 hover:text-white transition-colors"
+                  className="block font-['Archivo:Regular',sans-serif] text-black/60 text-[14px] mb-3 hover:text-[#354ee7] transition-colors"
                   style={{ fontVariationSettings: '"wdth" 100' }}
                 >
                   {link}
@@ -1613,14 +1714,14 @@ function Footer() {
 
           {/* Newsletter */}
           <div>
-            <p className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[13px] text-white mb-4" style={{ fontVariationSettings: '"wdth" 100' }}>
+            <p className="font-['Archivo:SemiBold',sans-serif] font-semibold text-[13px] text-[#060d37] mb-4" style={{ fontVariationSettings: '"wdth" 100' }}>
               Recibe novedades
             </p>
             <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
-                className="flex-1 bg-white/10 border border-white/25 rounded-lg px-3 py-2 text-[13px] text-white placeholder:text-white/50 outline-none focus:border-[#354ee7] transition-colors font-['Archivo:Regular',sans-serif]"
+                className="flex-1 bg-white border border-black/15 rounded-lg px-3 py-2 text-[13px] text-[#060d37] placeholder:text-black/40 outline-none focus:border-[#354ee7] transition-colors font-['Archivo:Regular',sans-serif]"
               />
               <button className="bg-[#354ee7] text-white font-['Archivo:SemiBold',sans-serif] text-[13px] px-4 py-2 rounded-lg hover:bg-[#2a3ec0] transition-colors" style={{ fontVariationSettings: '"wdth" 100' }}>
                 Enviar
@@ -1631,17 +1732,17 @@ function Footer() {
       </div>
 
       {/* Legal / regulatory notices */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-8 border-b border-white/12 flex flex-col gap-2">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-8 border-b border-black/10 flex flex-col gap-2">
         {legalLines.map((line) => (
-          <p key={line} className="font-['Archivo:Regular',sans-serif] text-[#a5a1e8] text-[12px] leading-[1.6] max-w-[900px]" style={{ fontVariationSettings: '"wdth" 100' }}>
+          <p key={line} className="font-['Archivo:Regular',sans-serif] text-black/60 text-[12px] leading-[1.6] max-w-[900px]" style={{ fontVariationSettings: '"wdth" 100' }}>
             {line}
           </p>
         ))}
         <div className="flex flex-wrap gap-x-8 gap-y-1 mt-2">
           {legalEmails.map((item) => (
-            <p key={item.email} className="font-['Archivo:Regular',sans-serif] text-[#a5a1e8] text-[12px]" style={{ fontVariationSettings: '"wdth" 100' }}>
+            <p key={item.email} className="font-['Archivo:Regular',sans-serif] text-black/60 text-[12px]" style={{ fontVariationSettings: '"wdth" 100' }}>
               {item.label}:{" "}
-              <a href={`mailto:${item.email}`} className="text-white hover:underline">
+              <a href={`mailto:${item.email}`} className="text-[#354ee7] hover:underline">
                 {item.email}
               </a>
             </p>
@@ -1651,7 +1752,7 @@ function Footer() {
 
       {/* Bottom bar */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-4 flex flex-col md:flex-row items-center justify-between gap-2 flex-wrap">
-        <p className="font-['Archivo:Regular',sans-serif] text-[#7f7ac0] text-[13px]" style={{ fontVariationSettings: '"wdth" 100' }}>
+        <p className="font-['Archivo:Regular',sans-serif] text-black/50 text-[13px]" style={{ fontVariationSettings: '"wdth" 100' }}>
           © 2026 CEIPA. Todos los derechos reservados.
         </p>
         <div className="flex gap-6">
@@ -1659,7 +1760,7 @@ function Footer() {
             <a
               key={link}
               href="#"
-              className="font-['Archivo:Regular',sans-serif] text-[#7f7ac0] text-[13px] hover:text-white transition-colors"
+              className="font-['Archivo:Regular',sans-serif] text-black/50 text-[13px] hover:text-[#354ee7] transition-colors"
               style={{ fontVariationSettings: '"wdth" 100' }}
             >
               {link}
@@ -1682,7 +1783,6 @@ export default function App() {
       <OfertaAcademica />
       <PorQueCeipa />
       <Testimonios />
-      <InnovationText />
       <Financiacion />
       <Novedades />
       <Acreditaciones />

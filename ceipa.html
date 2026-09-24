@@ -68,6 +68,10 @@
       from { opacity: 0; transform: translateY(-8px); }
       to   { opacity: 1; transform: none; }
     }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateX(32px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
 
     /* ─── NAV ─────────────────────────────────────────────── */
     #ceipa-nav {
@@ -114,6 +118,24 @@
       transition: color .2s, background .2s;
     }
     .nav-dropdown a:hover { color: var(--blue); background: #eef1fd; }
+    .nav-dropdown-item-group { position: relative; }
+    .nav-dropdown-group-trigger {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 8px 20px; font-size: 14px; color: #444; cursor: default;
+      transition: color .2s, background .2s;
+    }
+    .nav-dropdown-group-trigger:hover { color: var(--blue); background: #eef1fd; }
+    .nav-dropdown-group-trigger svg { flex-shrink: 0; }
+    .nav-dropdown-flyout {
+      position: absolute; top: 0; left: 100%; margin-left: 8px;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.14);
+      min-width: 200px; padding: 8px 0;
+      opacity: 0; visibility: hidden;
+      transition: opacity .2s, visibility .2s;
+      z-index: 201;
+    }
+    .nav-dropdown-item-group:hover .nav-dropdown-flyout { opacity: 1; visibility: visible; }
     .nav-cta {
       background: var(--blue); color: #fff;
       font-size: 14px; font-weight: 600;
@@ -176,6 +198,25 @@
     }
     .mob-sub a:last-child { border-bottom: none; }
     .mob-sub a:hover { color: var(--blue); }
+    .mob-subgroup { border-bottom: 1px solid #eee; }
+    .mob-subgroup:last-child { border-bottom: none; }
+    .mob-subgroup-btn {
+      width: 100%; display: flex;
+      align-items: center; justify-content: space-between;
+      padding: 10px 0; font-size: 14px; color: #555;
+      transition: color .2s;
+    }
+    .mob-subgroup-btn:hover { color: var(--blue); }
+    .mob-subgroup-btn svg { transition: transform .2s; flex-shrink: 0; }
+    .mob-subgroup-btn.active svg { transform: rotate(180deg); }
+    .mob-subgroup-list { display: none; padding-bottom: 8px; }
+    .mob-subgroup-list.open { display: block; }
+    .mob-subgroup-list a {
+      display: block; padding: 8px 0 8px 16px;
+      font-size: 13px; font-style: italic; color: #666;
+      border-bottom: none;
+    }
+    .mob-subgroup-list a:hover { color: var(--blue); }
     .mob-cta-wrap { padding: 16px 20px; }
     .mob-cta {
       display: block; width: 100%; text-align: center;
@@ -221,7 +262,7 @@
       max-width: 1440px; margin: 0 auto;
     }
     .hero-text-wrap { width: 100%; }
-    .hero-title-clip { height: 180px; overflow: hidden; margin-bottom: 24px; }
+    .hero-title-clip { height: 165px; overflow: hidden; margin-bottom: 12px; }
     .hero-title {
       font-size: 38px; line-height: 1.05; white-space: pre-line;
     }
@@ -229,7 +270,7 @@
     #hero-highlight { color: var(--blue); transition: color .3s; }
     .hero-desc {
       font-size: 17px; font-weight: 200; line-height: 1.44;
-      max-width: 560px; margin-bottom: 32px; color: #111;
+      max-width: 560px; margin-bottom: 16px; color: #111;
       transition: color .3s;
     }
     .hero-cta {
@@ -265,14 +306,6 @@
     .hero-arrow-prev { left: 16px; }
     .hero-arrow-next { right: 16px; }
 
-    .hero-links-bar {
-      background: #fff; padding: 20px 24px;
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.04);
-    }
-    .hero-links-bar a { font-size: 15px; font-weight: 600; color: var(--blue); white-space: nowrap; }
-    .hero-links-bar a:hover { color: var(--blue-dark); }
-
     @media (max-width: 767px) { .hero-overlay-mobile { display: block; } }
 
     @media (min-width: 768px) {
@@ -283,15 +316,13 @@
       .hero-bg-desktop { display: block; }
       .hero-content { padding: 128px 64px 64px; }
       .hero-text-wrap { max-width: 52%; }
-      .hero-title-clip { height: 260px; }
+      .hero-title-clip { height: 260px; margin-bottom: 24px; }
       .hero-title { font-size: 64px; }
-      .hero-desc { font-size: 20px; }
+      .hero-desc { font-size: 20px; margin-bottom: 32px; }
       .hero-arrow { bottom: auto; top: 50%; transform: translateY(-50%); }
       .hero-arrow:hover { transform: translateY(-50%) scale(1.1); }
       .hero-arrow-prev { left: 32px; }
       .hero-arrow-next { right: 32px; }
-      .hero-links-bar { justify-content: space-around; padding: 20px 64px; }
-      .hero-links-bar a { font-size: 17px; }
     }
 
     /* ─── FORM SECTION ─────────────────────────────────────── */
@@ -321,17 +352,23 @@
       border: 2px solid var(--gray-bg);
       border-radius: 40px;
       box-shadow: 0 30px 63px -42px rgba(19,34,55,.34);
-      padding: 40px;
+      padding: 32px;
+      overflow: hidden;
     }
     .form-card h3 {
       font-size: 24px; font-weight: 400;
-      color: #132237; margin-bottom: 24px;
+      color: #132237;
     }
-    .form-grid {
-      display: grid; grid-template-columns: 1fr;
-      gap: 16px; margin-bottom: 16px;
-    }
-    .form-grid input {
+    .form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .form-step-label { font-size: 13px; color: #aaa; font-family: 'Archivo', sans-serif; }
+    .form-progress { height: 4px; background: #e5e7eb; border-radius: 100px; margin-bottom: 24px; overflow: hidden; }
+    .form-progress-bar { height: 100%; background: var(--blue); border-radius: 100px; width: 33.33%; transition: width .5s ease; }
+
+    .form-step { display: none; flex-direction: column; gap: 16px; animation: stepIn .28s ease both; }
+    .form-step.active { display: flex; }
+    .form-step-title { font-size: 20px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; font-family: 'Archivo', sans-serif; }
+
+    .form-step input {
       background: #fff;
       border: none; outline: none;
       border-radius: 20px;
@@ -339,43 +376,63 @@
       padding: 12px 20px;
       font-size: 13.3px;
       font-family: 'Lato', sans-serif;
-      color: #aaa;
+      color: #333;
       transition: box-shadow .2s;
     }
-    .form-grid input:focus {
-      box-shadow: 0 0 0 2px rgba(53,78,231,.25);
+    .form-step input:focus { box-shadow: 0 0 0 2px rgba(53,78,231,.25); }
+    .form-step input::placeholder { color: #aaa; }
+
+    .icfes-label { font-size: 15px; font-weight: 600; color: #132237; margin-bottom: 12px; font-family: 'Archivo', sans-serif; }
+    .icfes-row { display: flex; gap: 12px; }
+    .icfes-btn {
+      flex: 1; padding: 12px; border-radius: 20px;
+      font-size: 15px; font-weight: 600; font-family: 'Archivo', sans-serif;
+      border: 2px solid rgba(53,78,231,.3); background: #fff; color: var(--blue);
+      cursor: pointer; transition: all .2s;
     }
-    .form-grid input::placeholder { color: #aaa; }
-    .form-bottom {
-      display: flex; flex-direction: column;
-      align-items: flex-start; gap: 16px; margin-top: 24px;
+    .icfes-btn.selected { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 4px 14px rgba(53,78,231,.35); }
+    .icfes-warning { font-size: 13px; color: #d97706; margin-top: 12px; display: none; font-family: 'Archivo', sans-serif; }
+    .icfes-warning.show { display: block; }
+
+    .form-nav { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; gap: 16px; }
+    .form-back-btn {
+      font-size: 15px; color: var(--blue); background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 4px; visibility: hidden; font-family: 'Archivo', sans-serif;
     }
-    .form-captcha {
-      height: 54px; width: 160px;
-      border-radius: 11px; overflow: hidden;
-      box-shadow: 0 4px 4px rgba(0,0,0,.05);
-      flex-shrink: 0;
+    .form-back-btn.show { visibility: visible; }
+    .form-back-btn:hover { text-decoration: underline; }
+    .form-next-btn, .form-submit-btn {
+      font-size: 16px; font-weight: 600; padding: 12px 32px; border-radius: 100px;
+      border: none; cursor: not-allowed; background: #e5e7eb; color: #9ca3af;
+      transition: all .3s; font-family: 'Archivo', sans-serif;
     }
-    .form-captcha img { width: 100%; height: 100%; object-fit: cover; }
+    .form-next-btn.enabled, .form-submit-btn.enabled { cursor: pointer; background: var(--blue); color: #fff; box-shadow: 0 4px 14px rgba(53,78,231,.35); }
+    .form-next-btn.enabled:hover, .form-submit-btn.enabled:hover { background: var(--blue-dark); }
+    .form-submit-btn { display: none; }
+    .form-submit-btn.active { display: inline-block; }
+
     .form-legal {
       font-family: 'Roboto', sans-serif;
-      font-size: 9px; text-align: center; color: #111; margin-top: 16px;
+      font-size: 9px; text-align: center; color: #111; margin-top: 20px;
     }
     .form-legal span { text-decoration: underline; }
 
-    @media (min-width: 640px) {
-      .form-grid { grid-template-columns: 1fr 1fr; }
-      .form-bottom { flex-direction: row; align-items: center; justify-content: space-between; }
-    }
+    .form-success { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 320px; }
+    .form-success.show { display: flex; }
+    .form-success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .form-success h4 { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: 12px; font-family: 'Archivo', sans-serif; }
+    .form-success p { font-size: 16px; color: #444; max-width: 360px; font-family: 'Archivo', sans-serif; font-weight: 200; }
+
     @media (min-width: 1024px) {
       .form-wrap { flex-direction: row; }
       .form-heading-blue, .form-heading-dark { font-size: 60px; }
       .form-desc { font-size: 20px; }
       #form-section { padding: 80px 64px; }
+      .form-card { padding: 40px; }
     }
 
     /* ─── OFERTA ACADÉMICA (sticky · dirigido por scroll) ────── */
-    #oferta { --oferta-count: 5; --oferta-step: 70; }
+    #oferta { --oferta-count: 6; --oferta-step: 70; }
     .oferta-track {
       position: relative;
       height: calc(100vh + (var(--oferta-count) - 1) * var(--oferta-step) * 1vh);
@@ -398,10 +455,10 @@
     .oferta-bg-layer.active { opacity: 1; }
     .oferta-bg-layer img {
       width: 100%; height: 100%; object-fit: cover;
-      filter: blur(2px); transform: scale(1.1);
+      filter: blur(8px); transform: scale(1.1);
       transition: transform 1s ease-in-out;
     }
-    .oferta-bg-layer.active img { transform: scale(1); }
+    .oferta-bg-layer.active img { transform: scale(1.04); }
     .oferta-gradient {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background: linear-gradient(150deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.38) 50%, rgba(30,30,30,.15) 100%);
@@ -455,6 +512,22 @@
     .oferta-prog-btn:hover { background: var(--blue-dark); }
     .oferta-fade { opacity: 0; }
 
+    /* Mobile thumbnail strip — horizontal scroll, one thumbnail per program */
+    .oferta-mob-thumbs { display: flex; gap: 12px; overflow-x: auto; padding: 0 24px 32px; }
+    .oferta-mob-thumb {
+      position: relative; flex-shrink: 0; width: 170px; height: 210px;
+      border-radius: 8px; overflow: hidden; cursor: pointer;
+      border: 2px solid transparent; transition: border-color .3s ease-in-out;
+      padding: 0;
+    }
+    .oferta-mob-thumb.active { border-color: var(--blue); }
+    .oferta-mob-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .oferta-mob-thumb-shade { position: absolute; inset: 0; background: linear-gradient(20deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 100%); }
+    .oferta-mob-thumb-title {
+      position: absolute; bottom: 14px; left: 14px; right: 14px;
+      color: #fff; font-size: 16px; font-weight: 600; line-height: 1.25; text-align: left;
+    }
+
     .oferta-mobile-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; max-width: 280px; }
     .oferta-mobile-dots { display: flex; align-items: center; gap: 8px; }
     .oferta-mob-dot { height: 7px; width: 7px; border-radius: 100px; background: rgba(255,255,255,.5); border: none; cursor: pointer; padding: 0; transition: all .3s ease-in-out; }
@@ -492,6 +565,7 @@
       .oferta-prog-title { font-size: 56px; }
       .oferta-prog-desc { font-size: 19px; }
       .oferta-mobile-controls { display: none; }
+      .oferta-mob-thumbs { display: none; }
       .oferta-right { display: flex; width: 50%; }
     }
     @media (max-width: 767px) { #oferta { --oferta-step: 60; } }
@@ -506,7 +580,7 @@
       .oferta-sticky { position: static; }
     }
 
-    /* ─── POR QUÉ CEIPA (editorial: título grande sobre la foto) ── */
+    /* ─── POR QUÉ CEIPA (tarjeta flotante sobre foto recortada) ── */
     #por-que {
       max-width: 1440px; margin: 0 auto;
       padding: 64px 24px;
@@ -520,33 +594,44 @@
       line-height: 1.44; color: #111; max-width: 400px;
     }
     .por-que-row { display: flex; flex-direction: column; }
+    .por-que-media { position: relative; z-index: 0; height: 320px; border-radius: 16px; overflow: hidden; }
+    .por-que-media img { width: 100%; height: 100%; object-fit: cover; }
+    .por-que-card {
+      position: relative; z-index: 1;
+      margin: -40px 16px 0; padding: 32px;
+      background: var(--blue); border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(53,78,231,.25);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .por-que-card > svg { margin-bottom: 20px; }
+    .por-que-eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+      color: rgba(255,255,255,.7); margin-bottom: 12px; display: block;
+    }
     .por-que-title {
-      position: relative; z-index: 2; flex-shrink: 0;
-      font-size: 48px; font-weight: 700; color: var(--blue);
-      line-height: .92; letter-spacing: -0.02em;
-      padding-bottom: 16px;
+      font-size: 34px; font-weight: 700; color: #fff;
+      line-height: .98; letter-spacing: -0.02em;
+      margin-bottom: 20px;
     }
-    .por-que-media { flex: 1; min-width: 0; }
-    .por-que-img { height: 280px; border-radius: 16px; overflow: hidden; }
-    .por-que-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+    .por-que-desc { font-size: 16px; font-weight: 200; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 32px; }
     .por-que-caption {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-top: 12px; font-size: 13px; color: rgba(0,0,0,.6);
+      display: flex; align-items: center; gap: 8px; width: fit-content;
+      margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.2);
+      font-size: 14px; font-weight: 600; color: #fff; text-decoration: none;
     }
-    .por-que-side {
-      flex-shrink: 0; padding-top: 32px;
-      display: flex; flex-direction: column;
+    .por-que-caption svg { transition: transform 0.3s ease; }
+    .por-que-caption:hover svg { transform: translateX(4px); }
+
+    @media (min-width: 768px) {
+      #por-que { padding: 96px 64px; }
+      .por-que-row { flex-direction: row; align-items: stretch; }
+      .por-que-media { flex: 0 0 55%; height: auto; }
+      .por-que-card { flex: 0 0 48%; margin: 0 0 0 -64px; padding: 48px; }
+      .por-que-title { font-size: 44px; }
     }
-    .por-que-side svg { margin-bottom: 16px; }
-    .por-que-side-title { font-size: 20px; font-weight: 600; color: var(--text-dark); line-height: 1.2; margin-bottom: 8px; }
-    .por-que-side-desc { font-size: 14px; color: rgba(0,0,0,.7); line-height: 1.6; }
 
     @media (min-width: 1024px) {
-      #por-que { padding: 96px 64px; }
-      .por-que-row { flex-direction: row; align-items: flex-end; }
-      .por-que-title { font-size: 84px; padding-bottom: 32px; margin-right: -110px; }
-      .por-que-img { height: 560px; }
-      .por-que-side { width: 300px; padding-left: 40px; padding-bottom: 40px; padding-top: 0; }
+      .por-que-title { font-size: 52px; }
     }
 
     /* ─── TESTIMONIOS (sticky · dirigido por scroll) ────────── */
@@ -746,50 +831,57 @@
       .test-hint svg { animation: none; }
     }
 
-    /* ─── INNOVATION TEXT ──────────────────────────────────── */
-    #innovation { padding: 40px 0; overflow: hidden; }
-    .innovation-track {
-      display: flex; white-space: nowrap;
-      animation: scrollText 20s linear infinite;
-    }
-    .innovation-text {
-      font-size: 100px; font-weight: 100;
-      color: var(--blue); line-height: .83;
-      opacity: .36; padding-right: 80px;
-      font-family: 'Archivo', sans-serif;
-    }
-
-    @media (min-width: 768px) {
-      .innovation-text { font-size: 160px; }
-    }
-
     /* ─── FINANCIACIÓN ─────────────────────────────────────── */
     #financiacion {
-      background: var(--gray-bg);
-      padding: 64px 24px; overflow: hidden;
+      max-width: 1440px; margin: 0 auto;
+      padding: 40px 16px;
+    }
+    .financiacion-card {
+      position: relative; overflow: hidden;
+      border-radius: 32px;
+      background: linear-gradient(135deg, #eef0f5 0%, #dde1ea 100%);
+      border-left: 4px solid var(--blue);
     }
     .financiacion-inner {
-      max-width: 1440px; margin: 0 auto;
+      position: relative; z-index: 1;
       display: flex; flex-direction: column;
-      gap: 32px; align-items: center;
+      gap: 24px; align-items: center;
+      padding: 48px 0 48px 24px;
     }
-    .financiacion-text { flex: 1; max-width: 700px; z-index: 1; }
-    .financiacion-triangle {
-      flex: 1; width: 100%; height: 300px; position: relative;
+    .financiacion-text { flex: 1; max-width: 560px; padding: 0 24px; }
+    .financiacion-text h2 {
+      font-family: 'Archivo', sans-serif; font-weight: 700;
+      color: var(--text-dark); font-size: 40px; line-height: 1.05;
+      margin-bottom: 16px;
     }
-    .financiacion-triangle svg { width: 100%; height: 100%; }
+    .financiacion-text p {
+      font-size: 15px; color: rgba(0,0,0,.6); line-height: 1.6;
+      max-width: 440px; margin-bottom: 32px;
+    }
+    /* Sin padding/max-width a la derecha: la imagen llega hasta el borde derecho del contenedor */
+    .financiacion-visual {
+      flex: 1; align-self: stretch; width: 100%;
+      height: 260px;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .financiacion-visual img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
     .btn-filled {
       display: inline-block;
-      background: var(--blue); color: #fff;
-      font-size: 18px; padding: 12px 32px;
+      background: var(--text-dark); color: #fff;
+      font-size: 14px; font-weight: 600; padding: 10px 24px;
       border-radius: 100px;
       transition: background .3s;
     }
-    .btn-filled:hover { background: var(--blue-dark); }
+    .btn-filled:hover { background: var(--blue); }
 
     @media (min-width: 1024px) {
-      #financiacion { padding: 80px 64px; }
-      .financiacion-inner { flex-direction: row; }
+      #financiacion { padding: 64px 64px; }
+      .financiacion-card { border-radius: 40px; }
+      .financiacion-inner { flex-direction: row; gap: 40px; padding: 64px 0 64px 56px; }
+      .financiacion-text { padding: 0; }
+      .financiacion-text h2 { font-size: 52px; }
+      .financiacion-text p { font-size: 16px; }
+      .financiacion-visual { height: 340px; }
     }
 
     /* ─── NOVEDADES ────────────────────────────────────────── */
@@ -1007,11 +1099,11 @@
     .acred-seal:hover .acred-seal-name { opacity: 1; }
 
     /* ─── FOOTER ───────────────────────────────────────────── */
-    #footer { background: var(--navy); color: #fff; }
+    #footer { background: var(--gray-bg); color: var(--text-dark); }
     .footer-main {
       max-width: 1440px; margin: 0 auto;
       padding: 48px 24px;
-      border-bottom: 1px solid rgba(255,255,255,.12);
+      border-bottom: 1px solid rgba(0,0,0,.1);
     }
     .footer-grid {
       display: grid; grid-template-columns: 1fr;
@@ -1025,34 +1117,34 @@
     .footer-legal {
       max-width: 1440px; margin: 0 auto;
       padding: 32px 24px;
-      border-bottom: 1px solid rgba(255,255,255,.12);
+      border-bottom: 1px solid rgba(0,0,0,.1);
       display: flex; flex-direction: column; gap: 8px;
     }
-    .footer-legal p { font-size: 12px; color: #a5a1e8; line-height: 1.6; max-width: 900px; }
+    .footer-legal p { font-size: 12px; color: rgba(0,0,0,.6); line-height: 1.6; max-width: 900px; }
     .footer-legal-emails { display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 8px; }
     .footer-legal-emails p { font-size: 12px; }
-    .footer-legal-emails a { color: #fff; }
+    .footer-legal-emails a { color: var(--blue); }
     .footer-legal-emails a:hover { text-decoration: underline; }
     .footer-col-title {
       font-size: 13px; font-weight: 600;
-      color: #fff; margin-bottom: 16px;
+      color: var(--text-dark); margin-bottom: 16px;
     }
     .footer-col a {
       display: block; font-size: 14px;
-      color: #a5a1e8; margin-bottom: 12px;
+      color: rgba(0,0,0,.6); margin-bottom: 12px;
       transition: color .2s;
     }
-    .footer-col a:hover { color: #fff; }
+    .footer-col a:hover { color: var(--blue); }
     .newsletter-row { display: flex; gap: 8px; }
     .newsletter-row input {
-      flex: 1; background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.25);
+      flex: 1; background: #fff;
+      border: 1px solid rgba(0,0,0,.15);
       border-radius: 8px; padding: 8px 12px;
-      font-size: 13px; color: #fff;
+      font-size: 13px; color: var(--text-dark);
       font-family: 'Archivo', sans-serif;
       outline: none; transition: border-color .2s;
     }
-    .newsletter-row input::placeholder { color: rgba(255,255,255,.4); }
+    .newsletter-row input::placeholder { color: rgba(0,0,0,.4); }
     .newsletter-row input:focus { border-color: var(--blue); }
     .newsletter-row button {
       background: var(--blue); color: #fff;
@@ -1068,9 +1160,9 @@
       gap: 8px; align-items: center;
     }
     .footer-bottom p, .footer-bottom a {
-      font-size: 13px; color: #7f7ac0;
+      font-size: 13px; color: rgba(0,0,0,.5);
     }
-    .footer-bottom a:hover { color: #fff; }
+    .footer-bottom a:hover { color: var(--blue); }
     .footer-bottom-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
 
     @media (min-width: 768px) {
@@ -1104,10 +1196,24 @@
       <div class="nav-item">
         <button>Estudia en CEIPA <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="nav-dropdown">
-          <a href="#">Pregrados</a>
-          <a href="#">Posgrados</a>
-          <a href="#">Educación continua</a>
-          <a href="#">Admisiones</a>
+          <div class="nav-dropdown-item-group">
+            <div class="nav-dropdown-group-trigger">
+              Programas
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+            </div>
+            <div class="nav-dropdown-flyout">
+              <a href="#">Pregrados</a>
+              <a href="#">Especializaciones</a>
+              <a href="#">Maestrías</a>
+              <a href="#">Técnicos laborales</a>
+              <a href="#">Educación continua</a>
+              <a href="#">SENA</a>
+              <a href="#">Idiomas</a>
+            </div>
+          </div>
+          <a href="#">FCF</a>
+          <a href="#">Inscripción</a>
+          <a href="#">Financiación</a>
         </div>
       </div>
       <div class="nav-item">
@@ -1158,7 +1264,24 @@
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-estudia">Estudia en CEIPA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="mob-sub" id="sub-estudia">
-          <a href="#">Pregrados</a><a href="#">Posgrados</a><a href="#">Educación continua</a><a href="#">Admisiones</a>
+          <div class="mob-subgroup">
+            <button class="mob-subgroup-btn" data-subtarget="subgroup-programas">
+              Programas
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="mob-subgroup-list" id="subgroup-programas">
+              <a href="#">Pregrados</a>
+              <a href="#">Especializaciones</a>
+              <a href="#">Maestrías</a>
+              <a href="#">Técnicos laborales</a>
+              <a href="#">Educación continua</a>
+              <a href="#">SENA</a>
+              <a href="#">Idiomas</a>
+            </div>
+          </div>
+          <a href="#">FCF</a>
+          <a href="#">Inscripción</a>
+          <a href="#">Financiación</a>
         </div>
       </div>
       <div class="mob-item">
@@ -1224,13 +1347,6 @@
   </div>
 </section>
 
-<div class="hero-links-bar">
-  <a href="#" class="reveal delay-100">Técnicas Laborales</a>
-  <a href="#" class="reveal delay-200">Pregrados</a>
-  <a href="#" class="reveal delay-300">Especializaciones</a>
-  <a href="#" class="reveal delay-400">Maestrías</a>
-</div>
-
 <!-- ─── FORM SECTION ──────────────────────────────────── -->
 <section id="form-section">
   <div class="form-wrap">
@@ -1239,23 +1355,59 @@
       <p class="form-heading-dark">Lorem ipsum</p>
       <p class="form-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
     </div>
-    <div class="form-card reveal-right">
-      <h3>Estudia en CEIPA</h3>
-      <div class="form-grid">
-        <input type="text" placeholder="Nombre" />
-        <input type="text" placeholder="Apellido" />
-        <input type="email" placeholder="E-mail" />
-        <input type="tel" placeholder="Número de celular" />
-        <input type="text" placeholder="Tipo de programa" />
-        <input type="text" placeholder="Departamento en que reside" />
-      </div>
-      <div class="form-bottom">
-        <a href="#" class="btn-outline" style="font-size:18px;">Quiero más información</a>
-        <div class="form-captcha">
-          <img src="src/imports/Home1Desktop/d3bbd2cb1eb4a070f69d2af72ddb083ad99e4c46.png" alt="captcha" />
+    <div class="form-card reveal-right" id="form-card">
+      <div id="form-step-view">
+        <div class="form-header">
+          <h3>Estudia en CEIPA</h3>
+          <span class="form-step-label" id="form-step-label">Paso 1 de 3</span>
         </div>
+        <div class="form-progress"><div class="form-progress-bar" id="form-progress-bar"></div></div>
+
+        <div class="form-step active" data-step="0">
+          <p class="form-step-title">¿Cuéntanos sobre ti?</p>
+          <div>
+            <p class="icfes-label">¿Cuenta con resultados de pruebas ICFES?</p>
+            <div class="icfes-row">
+              <button type="button" class="icfes-btn" id="icfes-si" data-val="si">Sí</button>
+              <button type="button" class="icfes-btn" id="icfes-no" data-val="no">No</button>
+            </div>
+            <p class="icfes-warning" id="icfes-warning">Para ingresar a CEIPA es necesario contar con resultados de pruebas ICFES.</p>
+          </div>
+          <input type="text" id="f-programa" placeholder="Tipo de programa de interés" />
+        </div>
+
+        <div class="form-step" data-step="1">
+          <p class="form-step-title">¿Cómo te llamamos?</p>
+          <input type="text" id="f-nombre" placeholder="Nombre" />
+          <input type="text" id="f-apellido" placeholder="Apellido" />
+        </div>
+
+        <div class="form-step" data-step="2">
+          <p class="form-step-title">¿Cómo te contactamos?</p>
+          <input type="email" id="f-email" placeholder="E-mail" />
+          <input type="tel" id="f-celular" placeholder="Número de celular" />
+          <input type="text" id="f-departamento" placeholder="Departamento en que reside" />
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="form-back-btn" id="form-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Atrás
+          </button>
+          <button type="button" class="form-next-btn" id="form-next">Continuar →</button>
+          <button type="button" class="form-submit-btn" id="form-submit">Quiero más información</button>
+        </div>
+
+        <p class="form-legal">Al enviar acepta los términos de uso. Lee aquí las <span>Política de Tratamiento y Protección de datos y Habeas Data</span></p>
       </div>
-      <p class="form-legal">Al enviar acepta los términos de uso. Lee aquí las <span>Política de Tratamiento y Protección de datos y Habeas Data</span></p>
+
+      <div class="form-success" id="form-success">
+        <div class="form-success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h4>¡Gracias, <span id="form-success-name"></span>!</h4>
+        <p>Hemos recibido tu información. Un asesor de CEIPA se pondrá en contacto contigo pronto.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1286,6 +1438,7 @@
             </div>
           </div>
         </div>
+        <div class="oferta-mob-thumbs" id="oferta-mob-thumbs"></div>
         <div class="oferta-right">
           <div class="oferta-card-stack" id="oferta-card-stack"></div>
           <div class="oferta-right-arrows">
@@ -1302,23 +1455,21 @@
   </div>
 </section>
 
-<!-- ─── POR QUÉ CEIPA (editorial: título grande sobre la foto) ── -->
+<!-- ─── POR QUÉ CEIPA (tarjeta flotante sobre foto recortada) ── -->
 <section id="por-que">
   <div class="por-que-row">
-    <p class="por-que-title reveal-left">¿Por qué<br>CEIPA?</p>
-    <div class="por-que-media">
-      <div class="por-que-img reveal-scale">
-        <img src="src/imports/image-porqueceipa.png" alt="Por qué CEIPA" />
-      </div>
-      <div class="por-que-caption reveal delay-300">
-        <span>Medellín, Colombia</span>
-        <span>2026</span>
-      </div>
+    <div class="por-que-media reveal-scale">
+      <img src="src/imports/image-porqueceipa.png" alt="Por qué CEIPA" />
     </div>
-    <div class="por-que-side reveal-right delay-200">
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-      <p class="por-que-side-title">Formación con propósito</p>
-      <p class="por-que-side-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+    <div class="por-que-card reveal-right delay-200">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      <span class="por-que-eyebrow">Formación con propósito</span>
+      <p class="por-que-title">¿Por qué CEIPA?</p>
+      <p class="por-que-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+      <a href="#" class="por-que-caption">
+        <span>Conoce más de CEIPA</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -1351,26 +1502,21 @@
   <p class="sr-only" id="test-status" aria-live="polite"></p>
 </section>
 
-<!-- ─── INNOVATION TEXT ───────────────────────────────── -->
-<section id="innovation">
-  <div class="innovation-track">
-    <p class="innovation-text">Aquí la innovación no es una meta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-    <p class="innovation-text">Aquí la innovación no es una meta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-  </div>
-</section>
-
 <!-- ─── FINANCIACIÓN ─────────────────────────────────── -->
 <section id="financiacion">
-  <div class="financiacion-inner">
-    <div class="financiacion-text reveal-left">
-      <p class="section-title">Financiación</p>
-      <p class="section-desc" style="margin-bottom:32px;">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
-      <a href="#" class="btn-filled">Quiero más información</a>
-    </div>
-    <div class="financiacion-triangle reveal-right">
-      <svg viewBox="0 0 785 395" fill="none" preserveAspectRatio="xMidYMid meet">
-        <path d="M785 0L0 395H785V0Z" fill="#354ee7"/>
-      </svg>
+  <div class="financiacion-card reveal-scale">
+    <div class="financiacion-inner">
+      <div class="financiacion-text">
+        <h2 class="reveal-left">Financiación</h2>
+        <p class="reveal-left delay-100">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+        <div class="reveal-left delay-200" style="width:fit-content;">
+          <a href="#" class="btn-filled">Quiero más información</a>
+        </div>
+      </div>
+      <!-- Visual — reemplaza la imagen por tu propio GIF/imagen -->
+      <div class="financiacion-visual reveal-right delay-300">
+        <img src="src/imports/financiacion-visual.svg" alt="" />
+      </div>
     </div>
   </div>
 </section>
@@ -1528,7 +1674,7 @@
     <div class="footer-grid">
       <!-- Brand -->
       <div>
-        <img src="src/imports/logo-ceipa-blanco-png.png" alt="CEIPA" class="footer-logo" />
+        <img src="src/imports/logo-ceipa-azul-png.png" alt="CEIPA" class="footer-logo" />
         <img src="src/imports/footer/certificado-iso-9001-2015.png" alt="Certificado ISO 9001:2015 — Bureau Veritas" class="footer-iso" />
       </div>
       <!-- Estudia en CEIPA -->
@@ -1583,6 +1729,94 @@
     nav.classList.toggle('scrolled', window.scrollY > 20);
   });
 
+  /* ── Formulario progresivo (3 pasos) ─────────────────── */
+  (function () {
+    const stepEls = [...document.querySelectorAll('.form-step')];
+    const stepLabel = document.getElementById('form-step-label');
+    const progressBar = document.getElementById('form-progress-bar');
+    const backBtn = document.getElementById('form-back');
+    const nextBtn = document.getElementById('form-next');
+    const submitBtn = document.getElementById('form-submit');
+    const stepView = document.getElementById('form-step-view');
+    const successView = document.getElementById('form-success');
+    const successName = document.getElementById('form-success-name');
+    const icfesSiBtn = document.getElementById('icfes-si');
+    const icfesNoBtn = document.getElementById('icfes-no');
+    const icfesWarning = document.getElementById('icfes-warning');
+
+    const fields = {
+      programa: document.getElementById('f-programa'),
+      nombre: document.getElementById('f-nombre'),
+      apellido: document.getElementById('f-apellido'),
+      email: document.getElementById('f-email'),
+      celular: document.getElementById('f-celular'),
+      departamento: document.getElementById('f-departamento'),
+    };
+
+    const N = stepEls.length;
+    let step = 0;
+    let icfes = null;
+
+    function canNext() {
+      if (step === 0) return icfes === 'si' && fields.programa.value.trim() !== '';
+      if (step === 1) return fields.nombre.value.trim() !== '' && fields.apellido.value.trim() !== '';
+      if (step === 2) return fields.email.value.trim() !== '' && fields.celular.value.trim() !== '' && fields.departamento.value.trim() !== '';
+      return false;
+    }
+
+    function render() {
+      stepEls.forEach((el, i) => el.classList.toggle('active', i === step));
+      stepLabel.textContent = `Paso ${step + 1} de ${N}`;
+      progressBar.style.width = `${((step + 1) / N) * 100}%`;
+      backBtn.classList.toggle('show', step > 0);
+
+      const enabled = canNext();
+      const isLast = step === N - 1;
+      nextBtn.style.display = isLast ? 'none' : 'inline-block';
+      submitBtn.classList.toggle('active', isLast);
+      const activeBtn = isLast ? submitBtn : nextBtn;
+      activeBtn.classList.toggle('enabled', enabled);
+      activeBtn.disabled = !enabled;
+    }
+
+    icfesSiBtn.addEventListener('click', () => {
+      icfes = 'si';
+      icfesSiBtn.classList.add('selected');
+      icfesNoBtn.classList.remove('selected');
+      icfesWarning.classList.remove('show');
+      render();
+    });
+    icfesNoBtn.addEventListener('click', () => {
+      icfes = 'no';
+      icfesNoBtn.classList.add('selected');
+      icfesSiBtn.classList.remove('selected');
+      icfesWarning.classList.add('show');
+      render();
+    });
+
+    Object.values(fields).forEach((input) => input.addEventListener('input', render));
+
+    nextBtn.addEventListener('click', () => {
+      if (!canNext() || step >= N - 1) return;
+      stepEls[step].style.animation = 'none';
+      step += 1;
+      render();
+    });
+    backBtn.addEventListener('click', () => {
+      if (step <= 0) return;
+      step -= 1;
+      render();
+    });
+    submitBtn.addEventListener('click', () => {
+      if (!canNext()) return;
+      successName.textContent = fields.nombre.value.trim();
+      stepView.style.display = 'none';
+      successView.classList.add('show');
+    });
+
+    render();
+  })();
+
   /* ── Mobile hamburger ──────────────────────────────── */
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
@@ -1604,6 +1838,16 @@
         sub.classList.add('open');
         btn.classList.add('active');
       }
+    });
+  });
+
+  /* ── Mobile nested sub-menu (Programas within Estudia en CEIPA) ── */
+  document.querySelectorAll('.mob-subgroup-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = document.getElementById(btn.getAttribute('data-subtarget'));
+      const isOpen = list.classList.contains('open');
+      list.classList.toggle('open', !isOpen);
+      btn.classList.toggle('active', !isOpen);
     });
   });
 
@@ -1692,6 +1936,7 @@
     { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/image-6.png', card: 'src/imports/image-7.png' },
     { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/image-15.png', card: 'src/imports/image-14.png' },
     { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/image-12.png', card: 'src/imports/image-13.png' },
+    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/image-16.png', card: 'src/imports/image-16.png' },
   ];
   let ofertaActive = 0, ofertaAnimating = false;
   const ofertaSection   = document.getElementById('oferta');
@@ -1703,6 +1948,7 @@
   const ofertaDotbar    = document.getElementById('oferta-dotbar');
   const ofertaMobDots   = document.getElementById('oferta-mobile-dots');
   const ofertaCardStack = document.getElementById('oferta-card-stack');
+  const ofertaMobThumbs = document.getElementById('oferta-mob-thumbs');
 
   const ofertaN = ofertaSlides.length;
   const ofertaReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -1737,6 +1983,21 @@
     ofertaMobDots.appendChild(btn);
   });
   const ofertaMobDotEls = ofertaMobDots.querySelectorAll('.oferta-mob-dot');
+
+  /* Miniaturas móviles — una por programa, scroll horizontal */
+  ofertaSlides.forEach((s, i) => {
+    const thumb = document.createElement('button');
+    thumb.className = 'oferta-mob-thumb' + (i === 0 ? ' active' : '');
+    thumb.setAttribute('aria-label', s.title);
+    thumb.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+    thumb.innerHTML = `
+      <img src="${s.card}" alt="${s.title}">
+      <div class="oferta-mob-thumb-shade"></div>
+      <span class="oferta-mob-thumb-title">${s.title}</span>`;
+    thumb.addEventListener('click', () => goOfertaTo(i));
+    ofertaMobThumbs.appendChild(thumb);
+  });
+  const ofertaMobThumbEls = ofertaMobThumbs.querySelectorAll('.oferta-mob-thumb');
 
   function buildCardStack() {
     ofertaCardStack.innerHTML = '';
@@ -1780,6 +2041,17 @@
 
     ofertaDotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
     ofertaMobDotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    ofertaMobThumbEls.forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+      t.setAttribute('aria-current', i === idx ? 'true' : 'false');
+    });
+    // Keeps the mobile thumbnail strip in sync: scrolls its own scrollLeft (not
+    // scrollIntoView) so this never fights the page's vertical scroll-jack.
+    const activeThumb = ofertaMobThumbEls[idx];
+    if (activeThumb) {
+      const target = activeThumb.offsetLeft - (ofertaMobThumbs.clientWidth - activeThumb.offsetWidth) / 2;
+      ofertaMobThumbs.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+    }
     buildCardStack();
 
     setTimeout(() => { ofertaAnimating = false; }, 550);

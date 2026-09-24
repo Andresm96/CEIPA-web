@@ -149,11 +149,6 @@ html, body, #root {
   to { transform: translateX(-50%); }
 }
 
-.innovation-scroll {
-  animation: scrollText 20s linear infinite;
-  white-space: nowrap;
-}
-
 /* Acreditaciones logo marquee — slow, continuous, single line */
 .seals-scroll {
   animation: scrollText 32s linear infinite;
@@ -399,7 +394,7 @@ html, body, #root {
    Same rail-and-pin mechanic as Testimonios: `.oferta-track` is a tall rail;
    while scrolling through it, `.oferta-sticky` stays pinned full-screen and
    the active program advances with scroll progress. */
-#oferta-academica { --oferta-count: 5; --oferta-step: 70; }
+#oferta-academica { --oferta-count: 6; --oferta-step: 70; }
 
 #oferta-academica .oferta-track {
   position: relative;

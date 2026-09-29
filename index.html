@@ -860,13 +860,15 @@
       font-size: 15px; color: rgba(0,0,0,.6); line-height: 1.6;
       max-width: 440px; margin-bottom: 32px;
     }
-    /* Sin padding/max-width a la derecha: la imagen llega hasta el borde derecho del contenedor */
+    /* Sin padding/max-width a la derecha: la imagen llega hasta el borde derecho del contenedor.
+       Sin altura fija: se estira (align-self: stretch) hasta ocupar el mismo alto que el resto
+       de la tarjeta de Financiación. */
     .financiacion-visual {
       flex: 1; align-self: stretch; width: 100%;
-      height: 260px;
+      min-height: 260px;
       display: flex; align-items: center; justify-content: flex-end;
     }
-    .financiacion-visual img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+    .financiacion-visual img { height: 100%; width: 100%; object-fit: cover; }
     .btn-filled {
       display: inline-block;
       background: var(--text-dark); color: #fff;
@@ -879,11 +881,11 @@
     @media (min-width: 1024px) {
       #financiacion { padding: 64px 64px; }
       .financiacion-card { border-radius: 40px; }
-      .financiacion-inner { flex-direction: row; gap: 40px; padding: 64px 0 64px 56px; }
-      .financiacion-text { padding: 0; }
+      .financiacion-inner { flex-direction: row; gap: 40px; padding: 0 0 0 56px; }
+      .financiacion-text { padding: 64px 0; }
       .financiacion-text h2 { font-size: 52px; }
       .financiacion-text p { font-size: 16px; }
-      .financiacion-visual { height: 340px; }
+      .financiacion-visual { min-height: 340px; }
     }
 
     /* ─── NOVEDADES ────────────────────────────────────────── */
@@ -1517,7 +1519,7 @@
       </div>
       <!-- Visual — reemplaza la imagen por tu propio GIF/imagen -->
       <div class="financiacion-visual reveal-right delay-300">
-        <img src="src/imports/financiacion-visual.svg" alt="" />
+        <img src="src/imports/financiacion-visual.gif" alt="Aliados financieros: Tracendia, ValCredit, Sufi" />
       </div>
     </div>
   </div>

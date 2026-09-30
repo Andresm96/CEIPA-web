@@ -869,6 +869,86 @@
       display: flex; align-items: center; justify-content: flex-end;
     }
     .financiacion-visual img { height: 100%; width: 100%; object-fit: cover; }
+
+    /* Animación de aliados: la escena se diseña a 1200×675 y se escala con
+       --ceipa-scale (JS) para cubrir el contenedor, sin fondo propio. */
+    .ceipa-finance {
+      position: relative; align-self: stretch;
+      width: 100%; min-height: inherit;
+      overflow: hidden;
+    }
+    .ceipa-finance__scene {
+      position: absolute; left: 50%; top: 50%;
+      width: 1200px; height: 675px;
+      transform: translate(-50%, -50%) scale(var(--ceipa-scale, .5));
+      perspective: 1250px; perspective-origin: 50% 48%;
+    }
+    .ceipa-finance .ceipa-card {
+      position: absolute;
+      width: 390px; height: 260px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 42px;
+      transform-style: preserve-3d; will-change: transform;
+      background: radial-gradient(ellipse at 48% 30%, #ffffff 0%, #fbfdff 30%, #eef6fd 62%, #d9eafa 100%);
+      border: 2px solid rgba(190,220,250,.95);
+      box-shadow:
+        inset 0 0 7px #ffffff,
+        inset 0 0 22px rgba(110,175,240,.32),
+        inset 0 -8px 20px rgba(75,140,210,.18),
+        0 8px 15px rgba(0,0,0,.13),
+        0 0 8px rgba(150,205,255,.95);
+    }
+    .ceipa-finance .ceipa-card::before {
+      content: ""; position: absolute; inset: 11px;
+      border-radius: 31px;
+      border: 1px solid rgba(120,175,225,.4);
+      box-shadow: inset 0 0 8px rgba(100,160,220,.2), 0 0 4px #ffffff;
+      pointer-events: none;
+    }
+    .ceipa-finance .ceipa-card::after {
+      content: ""; position: absolute; inset: 17px;
+      border-radius: 27px; opacity: .30;
+      background-image: radial-gradient(circle, rgba(30,55,80,.5) .6px, transparent .8px);
+      background-size: 8px 8px;
+      pointer-events: none;
+    }
+    .ceipa-finance .ceipa-logo {
+      position: relative; z-index: 3;
+      font-family: Arial, Helvetica, sans-serif; font-weight: 800;
+      white-space: nowrap;
+      transform: translateZ(10px);
+    }
+    .ceipa-finance .davivienda   { font-size: 44px; color: #e00016; letter-spacing: -2px; }
+    .ceipa-finance .trascendia   { font-size: 48px; color: #25118c; letter-spacing: -3px; }
+    .ceipa-finance .valcredit    { font-size: 40px; }
+    .ceipa-finance .valcredit b  { color: #171717; }
+    .ceipa-finance .valcredit strong { color: #f4aa00; }
+    .ceipa-finance .sistecredito { font-size: 48px; }
+    .ceipa-finance .sistecredito b { color: #07388c; }
+    .ceipa-finance .sistecredito strong { color: #00c625; }
+    .ceipa-finance .sufi  { font-size: 70px; color: #ed0032; }
+    .ceipa-finance .summa { font-size: 55px; color: #0aa6b5; }
+    .ceipa-finance .blue  { font-size: 48px; color: #0754a6; }
+
+    /* Carril izquierdo baja, carril derecho sube */
+    .ceipa-finance .ceipa-down { left: 165px; animation: ceipaDown 14s linear infinite; }
+    .ceipa-finance .ceipa-up   { left: 535px; animation: ceipaUp 14s linear infinite; }
+    .ceipa-finance .ceipa-p1 { animation-delay: 0s; }
+    .ceipa-finance .ceipa-p2 { animation-delay: -3.5s; }
+    .ceipa-finance .ceipa-p3 { animation-delay: -7s; }
+    .ceipa-finance .ceipa-p4 { animation-delay: -10.5s; }
+
+    @keyframes ceipaDown {
+      0%   { transform: translate3d(80px, -390px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+      100% { transform: translate3d(-150px, 920px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+    }
+    @keyframes ceipaUp {
+      0%   { transform: translate3d(-100px, 920px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+      100% { transform: translate3d(130px, -390px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ceipa-finance .ceipa-card { animation-play-state: paused; }
+    }
     .btn-filled {
       display: inline-block;
       background: var(--text-dark); color: #fff;
@@ -1517,9 +1597,22 @@
           <a href="#" class="btn-filled">Quiero más información</a>
         </div>
       </div>
-      <!-- Visual — reemplaza la imagen por tu propio GIF/imagen -->
+      <!-- Visual — animación CSS de aliados financieros -->
       <div class="financiacion-visual reveal-right delay-300">
-        <img src="src/imports/financiacion-visual.gif" alt="Aliados financieros: Tracendia, ValCredit, Sufi" />
+        <div class="ceipa-finance" role="img" aria-label="Aliados financieros: Davivienda, Trascendia, ValCredit, Sistecrédito, Sufi y Summa">
+          <div class="ceipa-finance__scene" aria-hidden="true">
+            <!-- CARRIL 1: BAJA -->
+            <div class="ceipa-card ceipa-down ceipa-p1"><span class="ceipa-logo davivienda">DAVIVIENDA</span></div>
+            <div class="ceipa-card ceipa-down ceipa-p2"><span class="ceipa-logo trascendia">Trascendia</span></div>
+            <div class="ceipa-card ceipa-down ceipa-p3"><span class="ceipa-logo valcredit"><b>Val</b><strong>Credit</strong></span></div>
+            <div class="ceipa-card ceipa-down ceipa-p4"><span class="ceipa-logo blue">Financiación</span></div>
+            <!-- CARRIL 2: SUBE -->
+            <div class="ceipa-card ceipa-up ceipa-p1"><span class="ceipa-logo sistecredito"><b>siste</b><strong>crédito</strong></span></div>
+            <div class="ceipa-card ceipa-up ceipa-p2"><span class="ceipa-logo sufi">Sufi</span></div>
+            <div class="ceipa-card ceipa-up ceipa-p3"><span class="ceipa-logo summa">summa</span></div>
+            <div class="ceipa-card ceipa-up ceipa-p4"><span class="ceipa-logo blue">Crédito</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2251,6 +2344,15 @@
   window.addEventListener('scroll', onTestScroll, { passive: true });
   window.addEventListener('resize', onTestResize);
   reduceMotion.addEventListener('change', measureTest);
+
+  /* ── Financiación: escala la escena 1200×675 para cubrir su contenedor ── */
+  const ceipaFinance = document.querySelector('.ceipa-finance');
+  if (ceipaFinance) {
+    new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      ceipaFinance.style.setProperty('--ceipa-scale', Math.max(width / 1200, height / 675));
+    }).observe(ceipaFinance);
+  }
 
   /* ── FAQs acordeón ─────────────────────────────────── */
   document.querySelectorAll('.faq-btn').forEach(btn => {

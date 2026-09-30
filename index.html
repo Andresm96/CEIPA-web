@@ -876,6 +876,16 @@
       position: relative; align-self: stretch;
       width: 100%; min-height: inherit;
       overflow: hidden;
+      /* Degradado superior/inferior: las tarjetas se desvanecen al salir del plano */
+      --ceipa-fade: linear-gradient(to bottom,
+        transparent 0%, rgba(0,0,0,.15) 3%, rgba(0,0,0,.55) 7%, #000 12%,
+        #000 88%, rgba(0,0,0,.55) 93%, rgba(0,0,0,.15) 97%, transparent 100%);
+      -webkit-mask-image: var(--ceipa-fade);
+              mask-image: var(--ceipa-fade);
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+              mask-size: 100% 100%;
     }
     .ceipa-finance__scene {
       position: absolute; left: 50%; top: 50%;
@@ -962,10 +972,19 @@
       #financiacion { padding: 64px 64px; }
       .financiacion-card { border-radius: 40px; }
       .financiacion-inner { flex-direction: row; gap: 40px; padding: 0 0 0 56px; }
-      .financiacion-text { padding: 64px 0; }
+      .financiacion-text { flex: 0 0 440px; padding: 64px 0; }
       .financiacion-text h2 { font-size: 52px; }
       .financiacion-text p { font-size: 16px; }
       .financiacion-visual { min-height: 340px; }
+      /* En escritorio la animación también se desvanece por la izquierda,
+         para fundirse con la columna de texto. */
+      .ceipa-finance {
+        --ceipa-fade-x: linear-gradient(to right, transparent 0%, #000 14%);
+        -webkit-mask-image: var(--ceipa-fade), var(--ceipa-fade-x);
+        -webkit-mask-composite: source-in;
+                mask-image: var(--ceipa-fade), var(--ceipa-fade-x);
+                mask-composite: intersect;
+      }
     }
 
     /* ─── NOVEDADES ────────────────────────────────────────── */

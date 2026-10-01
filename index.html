@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CEIPA – Powered by Arizona State University</title>
 
-  <!-- Google Fonts: Archivo (200–700) + Lato + Roboto -->
+  <!-- Google Fonts: Archivo (200–700) + Ancizar Serif (títulos) + Lato + Roboto -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600;700&family=Lato:wght@400&family=Roboto:wght@400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;400;600;700&family=Ancizar+Serif:wght@400;600;700&family=Lato:wght@400&family=Roboto:wght@400&display=swap" rel="stylesheet" />
 
   <style>
     /* ─── Reset ─────────────────────────────────────────── */
@@ -19,6 +19,13 @@
        y position:sticky deja de funcionar (necesario para #testimonios). */
     body { background: #fafafa; font-family: 'Archivo', sans-serif; overflow-x: clip; }
     @supports not (overflow-x: clip) { body { overflow-x: hidden; } }
+    /* Todos los títulos del sitio usan Ancizar Serif */
+    h1, h2, h3, h4, h5, h6,
+    .form-heading-blue, .form-heading-dark, .form-step-title,
+    .oferta-prog-title, .oferta-mob-thumb-title, .oferta-card-title,
+    .section-title, .por-que-title, .novedad-title, .cta-title, .footer-col-title {
+      font-family: 'Ancizar Serif', Georgia, serif;
+    }
     img { display: block; max-width: 100%; }
     button { cursor: pointer; border: none; background: none; font-family: inherit; }
     a { text-decoration: none; color: inherit; }
@@ -83,17 +90,21 @@
       display: none;
       background: #fff;
       border-radius: 85px;
-      margin: 16px;
+      /* Barra del ancho de su contenido y centrada: logo, enlaces y botón
+         quedan agrupados en el centro de la página. */
+      width: fit-content; max-width: calc(100% - 32px);
+      margin: 16px auto;
       padding: 12px 32px;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      gap: clamp(20px, 3.3vw, 48px);
       box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
     .nav-logo { height: 40px; object-fit: contain; }
-    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links { display: flex; align-items: center; gap: clamp(16px, 2.2vw, 32px); }
     .nav-item { position: relative; }
     .nav-item > button {
-      font-size: 16px; color: #111;
+      font-size: 16px; color: #111; white-space: nowrap;
       display: flex; align-items: center; gap: 4px;
       transition: color .2s;
     }
@@ -317,7 +328,9 @@
       .hero-content { padding: 128px 64px 64px; }
       .hero-text-wrap { max-width: 52%; }
       .hero-title-clip { height: 260px; margin-bottom: 24px; }
-      .hero-title { font-size: 64px; }
+      /* Fluido: Ancizar Serif es más ancha que Archivo; así ningún slide
+         pasa de 4 líneas y cabe en el clip de 260px. */
+      .hero-title { font-size: clamp(40px, 4.2vw, 60px); }
       .hero-desc { font-size: 20px; margin-bottom: 32px; }
       .hero-arrow { bottom: auto; top: 50%; transform: translateY(-50%); }
       .hero-arrow:hover { transform: translateY(-50%) scale(1.1); }
@@ -366,7 +379,7 @@
 
     .form-step { display: none; flex-direction: column; gap: 16px; animation: stepIn .28s ease both; }
     .form-step.active { display: flex; }
-    .form-step-title { font-size: 20px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; font-family: 'Archivo', sans-serif; }
+    .form-step-title { font-size: 20px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
 
     .form-step input {
       background: #fff;
@@ -420,7 +433,7 @@
     .form-success { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 320px; }
     .form-success.show { display: flex; }
     .form-success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .form-success h4 { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: 12px; font-family: 'Archivo', sans-serif; }
+    .form-success h4 { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
     .form-success p { font-size: 16px; color: #444; max-width: 360px; font-family: 'Archivo', sans-serif; font-weight: 200; }
 
     @media (min-width: 1024px) {
@@ -852,7 +865,7 @@
     }
     .financiacion-text { flex: 1; max-width: 560px; padding: 0 24px; }
     .financiacion-text h2 {
-      font-family: 'Archivo', sans-serif; font-weight: 700;
+      font-weight: 700;
       color: var(--text-dark); font-size: 40px; line-height: 1.05;
       margin-bottom: 16px;
     }
@@ -917,44 +930,46 @@
     }
     .ceipa-finance .ceipa-card::after {
       content: ""; position: absolute; inset: 17px;
-      border-radius: 27px; opacity: .30;
+      border-radius: 27px; opacity: .20;
       background-image: radial-gradient(circle, rgba(30,55,80,.5) .6px, transparent .8px);
       background-size: 8px 8px;
       pointer-events: none;
     }
+    /* Logos en WebP 3:2 (ya traen su aire); el tamaño varía según la forma del logo */
     .ceipa-finance .ceipa-logo {
-      position: relative; z-index: 3;
-      font-family: Arial, Helvetica, sans-serif; font-weight: 800;
-      white-space: nowrap;
-      transform: translateZ(10px);
+      position: relative; z-index: 5;
+      display: block; width: 68%; height: 58%;
+      object-fit: contain; object-position: center;
+      transform: translateZ(15px);
+      pointer-events: none;
     }
-    .ceipa-finance .davivienda   { font-size: 44px; color: #e00016; letter-spacing: -2px; }
-    .ceipa-finance .trascendia   { font-size: 48px; color: #25118c; letter-spacing: -3px; }
-    .ceipa-finance .valcredit    { font-size: 40px; }
-    .ceipa-finance .valcredit b  { color: #171717; }
-    .ceipa-finance .valcredit strong { color: #f4aa00; }
-    .ceipa-finance .sistecredito { font-size: 48px; }
-    .ceipa-finance .sistecredito b { color: #07388c; }
-    .ceipa-finance .sistecredito strong { color: #00c625; }
-    .ceipa-finance .sufi  { font-size: 70px; color: #ed0032; }
-    .ceipa-finance .summa { font-size: 55px; color: #0aa6b5; }
-    .ceipa-finance .blue  { font-size: 48px; color: #0754a6; }
+    .ceipa-finance .ceipa-logo--wide       { width: 76%; height: 52%; }
+    .ceipa-finance .ceipa-logo--extra-wide { width: 82%; height: 48%; }
+    .ceipa-finance .ceipa-logo--tall       { width: 58%; height: 68%; }
 
-    /* Carril izquierdo baja, carril derecho sube */
-    .ceipa-finance .ceipa-down { left: 165px; animation: ceipaDown 14s linear infinite; }
-    .ceipa-finance .ceipa-up   { left: 535px; animation: ceipaUp 14s linear infinite; }
+    /* Carril izquierdo baja (7 tarjetas), carril derecho sube (6 tarjetas).
+       Para que no se encimen, cada carril recorre (n.º de tarjetas × 250px) en
+       vertical: así todas quedan separadas 250px y, con 4,5 s entre tarjetas,
+       ambos carriles van a la misma velocidad. Recorridos centrados en y=265. */
+    .ceipa-finance .ceipa-down {
+      left: 150px; animation: ceipaTrack 31.5s linear infinite;   /* 7 × 4,5 s */
+      --x0: 119px;  --y0: -610px; --x1: -189px; --y1: 1140px;     /* 7 × 250px */
+    }
+    .ceipa-finance .ceipa-up {
+      left: 580px; animation: ceipaTrack 27s linear infinite;     /* 6 × 4,5 s */
+      --x0: -117px; --y0: 1015px; --x1: 147px;  --y1: -485px;     /* 6 × 250px */
+    }
     .ceipa-finance .ceipa-p1 { animation-delay: 0s; }
-    .ceipa-finance .ceipa-p2 { animation-delay: -3.5s; }
-    .ceipa-finance .ceipa-p3 { animation-delay: -7s; }
-    .ceipa-finance .ceipa-p4 { animation-delay: -10.5s; }
+    .ceipa-finance .ceipa-p2 { animation-delay: -4.5s; }
+    .ceipa-finance .ceipa-p3 { animation-delay: -9s; }
+    .ceipa-finance .ceipa-p4 { animation-delay: -13.5s; }
+    .ceipa-finance .ceipa-p5 { animation-delay: -18s; }
+    .ceipa-finance .ceipa-p6 { animation-delay: -22.5s; }
+    .ceipa-finance .ceipa-p7 { animation-delay: -27s; }
 
-    @keyframes ceipaDown {
-      0%   { transform: translate3d(80px, -390px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
-      100% { transform: translate3d(-150px, 920px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
-    }
-    @keyframes ceipaUp {
-      0%   { transform: translate3d(-100px, 920px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
-      100% { transform: translate3d(130px, -390px, -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+    @keyframes ceipaTrack {
+      0%   { transform: translate3d(var(--x0), var(--y0), -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
+      100% { transform: translate3d(var(--x1), var(--y1), -25px) rotateX(48deg) rotateY(-4deg) rotateZ(13deg); }
     }
     @media (prefers-reduced-motion: reduce) {
       .ceipa-finance .ceipa-card { animation-play-state: paused; }
@@ -1618,18 +1633,23 @@
       </div>
       <!-- Visual — animación CSS de aliados financieros -->
       <div class="financiacion-visual reveal-right delay-300">
-        <div class="ceipa-finance" role="img" aria-label="Aliados financieros: Davivienda, Trascendia, ValCredit, Sistecrédito, Sufi y Summa">
+        <div class="ceipa-finance" role="img" aria-label="Aliados financieros: Coomeva, Davivienda, ICETEX, Banco Serfinanza, Sufi, Addi, Brilla, Coopfuturo, Promo Summa, Sistecrédito, Tracendia, ValCredit y Comfama">
           <div class="ceipa-finance__scene" aria-hidden="true">
             <!-- CARRIL 1: BAJA -->
-            <div class="ceipa-card ceipa-down ceipa-p1"><span class="ceipa-logo davivienda">DAVIVIENDA</span></div>
-            <div class="ceipa-card ceipa-down ceipa-p2"><span class="ceipa-logo trascendia">Trascendia</span></div>
-            <div class="ceipa-card ceipa-down ceipa-p3"><span class="ceipa-logo valcredit"><b>Val</b><strong>Credit</strong></span></div>
-            <div class="ceipa-card ceipa-down ceipa-p4"><span class="ceipa-logo blue">Financiación</span></div>
+            <div class="ceipa-card ceipa-down ceipa-p1"><img src="src/imports/logos/webp/logo-coomeva.webp" alt="" class="ceipa-logo ceipa-logo--tall" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p2"><img src="src/imports/logos/webp/logo-davivienda.webp" alt="" class="ceipa-logo" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p3"><img src="src/imports/logos/webp/logo-icetex.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p4"><img src="src/imports/logos/webp/logo-serfinanza.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p5"><img src="src/imports/logos/webp/logo-sufi.webp" alt="" class="ceipa-logo" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p6"><img src="src/imports/logos/webp/logo-addi.webp" alt="" class="ceipa-logo" decoding="async" /></div>
+            <div class="ceipa-card ceipa-down ceipa-p7"><img src="src/imports/logos/webp/logo-brilla.webp" alt="" class="ceipa-logo" decoding="async" /></div>
             <!-- CARRIL 2: SUBE -->
-            <div class="ceipa-card ceipa-up ceipa-p1"><span class="ceipa-logo sistecredito"><b>siste</b><strong>crédito</strong></span></div>
-            <div class="ceipa-card ceipa-up ceipa-p2"><span class="ceipa-logo sufi">Sufi</span></div>
-            <div class="ceipa-card ceipa-up ceipa-p3"><span class="ceipa-logo summa">summa</span></div>
-            <div class="ceipa-card ceipa-up ceipa-p4"><span class="ceipa-logo blue">Crédito</span></div>
+            <div class="ceipa-card ceipa-up ceipa-p1"><img src="src/imports/logos/webp/logo-coopfuturo.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-up ceipa-p2"><img src="src/imports/logos/webp/logo-promo-suma.webp" alt="" class="ceipa-logo ceipa-logo--wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-up ceipa-p3"><img src="src/imports/logos/webp/logo-sistecredito.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-up ceipa-p4"><img src="src/imports/logos/webp/logo-tracendia.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-up ceipa-p5"><img src="src/imports/logos/webp/logo-valcredit.webp" alt="" class="ceipa-logo ceipa-logo--wide" decoding="async" /></div>
+            <div class="ceipa-card ceipa-up ceipa-p6"><img src="src/imports/logos/webp/logo-comfama.webp" alt="" class="ceipa-logo ceipa-logo--extra-wide" decoding="async" /></div>
           </div>
         </div>
       </div>

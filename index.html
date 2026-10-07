@@ -545,7 +545,8 @@
     }
     .oferta-mob-thumb.active { border-color: var(--blue); }
     .oferta-mob-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .oferta-mob-thumb-shade { position: absolute; inset: 0; background: linear-gradient(20deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 100%); }
+    /* Degradado solo en la franja inferior, detrás del nombre del programa */
+    .oferta-mob-thumb-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.45) 22%, rgba(0,0,0,0) 45%); }
     .oferta-mob-thumb-title {
       position: absolute; bottom: 14px; left: 14px; right: 14px;
       color: #fff; font-size: 16px; font-weight: 600; line-height: 1.25; text-align: left;
@@ -574,7 +575,7 @@
     .oferta-card:not(.is-active) { height: 320px; }
     .oferta-card > a { display: block; width: 100%; height: 100%; }
     .oferta-card img { width: 100%; height: 100%; object-fit: cover; }
-    .oferta-card-shade { position: absolute; inset: 0; background: linear-gradient(20deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 100%); }
+    .oferta-card-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.45) 22%, rgba(0,0,0,0) 45%); }
     .oferta-card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 20px 25px; }
     .oferta-card-info p { margin: 0; }
     .oferta-card-info .oferta-card-title { color: #fff; font-size: 19px; font-weight: 600; }
@@ -2086,11 +2087,11 @@
 
   /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
   const ofertaSlides = [
-    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-bg.webp', card: 'src/imports/oferta-pregrados-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
-    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-bg.webp', card: 'src/imports/oferta-posgrados-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
+    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-v2-bg.webp', card: 'src/imports/oferta-pregrados-v2-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
+    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-v2-bg.webp', card: 'src/imports/oferta-posgrados-v2-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
     { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-bg.webp', card: 'src/imports/oferta-tecnicas-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
-    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-bg.webp', card: 'src/imports/oferta-educontinua-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
-    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-bg.webp', card: 'src/imports/oferta-maestrias-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
+    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-v2-bg.webp', card: 'src/imports/oferta-educontinua-v2-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
+    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-v2-bg.webp', card: 'src/imports/oferta-maestrias-v2-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
     { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-bg.webp', card: 'src/imports/oferta-idiomas-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
   ];
   let ofertaActive = 0, ofertaAnimating = false;

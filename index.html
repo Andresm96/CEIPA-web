@@ -258,6 +258,8 @@
       transition: opacity .7s;
     }
     .hero-bg.active { opacity: 1; }
+    /* Imágenes 16:9 con el rostro arriba: subir el encuadre para no cortar la cabeza */
+    .hero-bg--top { object-position: 50% 25%; }
     .hero-bg-mobile { display: block; }
     .hero-bg-desktop { display: none; }
 
@@ -269,11 +271,18 @@
 
     .hero-content {
       position: relative; z-index: 2;
-      padding: 112px 24px 56px;
+      padding: 92px 24px 56px;
       max-width: 1440px; margin: 0 auto;
     }
     .hero-text-wrap { width: 100%; }
-    .hero-title-clip { height: 165px; overflow: hidden; margin-bottom: 12px; }
+    /* Móvil: alto según el título, para que el texto suba y no quede hueco bajo
+       el menú. Desktop (≥768px) usa un alto fijo (el del título más largo) para
+       que párrafo, botón y puntos no salten al cambiar de slide; el título se
+       alinea abajo para que siempre quede pegado al párrafo. */
+    .hero-title-clip {
+      height: auto; overflow: hidden; margin-bottom: 12px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
     .hero-title {
       font-size: 38px; line-height: 1.05; white-space: pre-line;
     }
@@ -1434,12 +1443,14 @@
 <!-- ─── HERO (foto de fondo completa · carrusel) ────────── -->
 <section id="hero">
   <!-- Fondos — crossfade por slide, JS alterna la clase .active -->
-  <img src="src/imports/image-1.png" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
-  <img src="src/imports/image-2.png" alt="" aria-hidden class="hero-bg hero-bg-desktop active" data-slide="0" />
-  <img src="src/imports/Imagen_de_Codex_17_sept_2026__10_50_11.png" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="1" />
-  <img src="src/imports/Imagen_de_Codex_17_sept_2026__10_53_23.png" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="1" />
-  <img src="src/imports/ceipa-hero-mobile-1080x1400.jpg" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
-  <img src="src/imports/ceipa-hero-desktop-1920x700.jpg" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
+  <img src="src/imports/image-1.png" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="1" />
+  <img src="src/imports/image-2.png" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="1" />
+  <img src="src/imports/hero-slide2-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
+  <img src="src/imports/hero-slide2-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
+  <img src="src/imports/hero-slide3-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
+  <img src="src/imports/hero-slide3-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top active" data-slide="0" />
+  <img src="src/imports/hero-slide4-franjas-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="3" />
+  <img src="src/imports/hero-slide4-luz-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top" data-slide="3" />
 
   <div class="hero-overlay" id="hero-overlay"></div>
   <div class="hero-overlay-mobile" id="hero-overlay-mobile"></div>
@@ -1455,7 +1466,7 @@
     <div class="hero-text-wrap">
       <div class="hero-title-clip">
         <h1 class="hero-title" id="hero-title">
-          <span id="hero-prefix">Lorem </span><span id="hero-highlight">hasit amet consectetur&#10;adipiscing elit</span>
+          <span id="hero-prefix">La </span><span id="hero-highlight">excelencia académica&#10;te espera hoy</span>
         </h1>
       </div>
       <p class="hero-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur sed lectus nec tempor. In quis tellus id sem placerat dignissim laoreet at ligula.</p>
@@ -1577,7 +1588,7 @@
 <section id="por-que">
   <div class="por-que-row">
     <div class="por-que-media reveal-scale">
-      <img src="src/imports/image-porqueceipa.png" alt="Por qué CEIPA" />
+      <img src="src/imports/porque-ceipa.webp" alt="Estudiantes de CEIPA junto a una impresora 3D en un laboratorio" />
     </div>
     <div class="por-que-card reveal-right delay-200">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
@@ -1992,6 +2003,15 @@
   /* ── HERO slider (foto de fondo completa) ────────────── */
   const heroSlides = [
     {
+      prefix: 'La ', highlight: 'excelencia académica\nte espera hoy',
+      dark: true, glassBtn: true,
+      /* La imagen ya trae una zona azul de marca para el texto: sin velo oscuro.
+         En desktop solo se tiñe de azul el borde izquierdo para que las franjas
+         claras de la textura no compitan con el párrafo. */
+      overlay: 'linear-gradient(to right, rgba(66,72,236,.75) 0%, rgba(66,72,236,.45) 18%, transparent 32%)',
+      overlayMobile: 'none',
+    },
+    {
       prefix: 'Lorem ', highlight: 'hasit amet consectetur\nadipiscing elit',
       dark: false, glassBtn: false,
       overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
@@ -2001,13 +2021,17 @@
       prefix: 'La ', highlight: 'innovación que\ntransforma vidas',
       dark: true, glassBtn: true,
       overlay: 'linear-gradient(to right, rgba(0,0,0,.52) 0%, rgba(0,0,0,.22) 58%, transparent 100%)',
-      overlayMobile: 'linear-gradient(to bottom, rgba(6,13,55,.82) 0%, rgba(6,13,55,.55) 40%, rgba(6,13,55,.22) 62%, transparent 85%)',
+      /* La imagen móvil ya trae la zona azul de marca para el texto */
+      overlayMobile: 'none',
     },
     {
-      prefix: 'La ', highlight: 'excelencia académica\nte espera hoy',
-      dark: true, glassBtn: true,
-      overlay: 'linear-gradient(to right, rgba(6,13,55,.70) 0%, rgba(6,13,55,.35) 55%, transparent 100%)',
-      overlayMobile: 'linear-gradient(to bottom, rgba(6,13,55,.82) 0%, rgba(6,13,55,.55) 40%, rgba(6,13,55,.22) 62%, transparent 85%)',
+      prefix: 'Lorem ', highlight: 'ipsum dolor\nsit amet',
+      dark: false, glassBtn: false,
+      /* Fondo claro (barridos de luz): texto oscuro, igual que el slide 1.
+         La imagen móvil ya trae arriba la zona clara con franjas para el texto:
+         solo un velo blanco suave para que el párrafo se lea sobre las franjas. */
+      overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
+      overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.35) 0%, rgba(255,255,255,.35) 40%, transparent 55%)',
     },
   ];
   let heroActive = 0;
@@ -2039,7 +2063,7 @@
     heroOverlay.style.background  = s.overlay;
     heroOverlayM.style.background = s.overlayMobile;
     heroPrefix.style.color    = s.dark ? '#fff' : '#111';
-    heroHighlight.style.color = s.dark ? '#7b8fff' : 'var(--blue)';
+    heroHighlight.style.color = s.dark ? '#fff' : 'var(--blue)';
     document.querySelector('.hero-desc').style.color = s.dark ? 'rgba(255,255,255,.9)' : '#111';
     heroCta.classList.toggle('glass', !!s.glassBtn);
     heroCta.style.borderColor = s.glassBtn ? '' : 'var(--blue)';
@@ -2062,12 +2086,12 @@
 
   /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
   const ofertaSlides = [
-    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/image-8.png', card: 'src/imports/image-9.png', url: 'https://ceipa.edu.co/carreras-profesionales/' },
-    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/image-10.png', card: 'src/imports/image-11.png', url: 'https://ceipa.edu.co/especializaciones/' },
-    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/image-6.png', card: 'src/imports/image-7.png', url: 'https://ceipa.edu.co/tecnico/' },
-    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/image-15.png', card: 'src/imports/image-14.png', url: 'https://educacioncontinua.ceipa.edu.co/' },
-    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/image-12.png', card: 'src/imports/image-13.png', url: 'https://ceipa.edu.co/maestrias/' },
-    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/image-16.png', card: 'src/imports/image-16.png', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
+    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-bg.webp', card: 'src/imports/oferta-pregrados-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
+    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-bg.webp', card: 'src/imports/oferta-posgrados-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
+    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-bg.webp', card: 'src/imports/oferta-tecnicas-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
+    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-bg.webp', card: 'src/imports/oferta-educontinua-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
+    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-bg.webp', card: 'src/imports/oferta-maestrias-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
+    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-bg.webp', card: 'src/imports/oferta-idiomas-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
   ];
   let ofertaActive = 0, ofertaAnimating = false;
   const ofertaSection   = document.getElementById('oferta');

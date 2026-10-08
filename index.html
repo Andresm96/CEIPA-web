@@ -356,14 +356,10 @@
       display: flex; flex-direction: column; gap: 48px; align-items: center;
     }
     .form-left { flex: 1; max-width: 440px; }
-    .form-heading-blue {
-      font-size: 52px; font-weight: 700;
-      color: var(--blue); line-height: .83; margin-bottom: 8px;
-    }
-    .form-heading-dark {
-      font-size: 52px; font-weight: 400;
-      color: var(--text-dark); line-height: .83;
-    }
+    /* H2 en dos tonos: cada parte en su propia línea */
+    .form-heading-blue, .form-heading-dark { display: block; font-size: 52px; line-height: .95; }
+    .form-heading-blue { font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+    .form-heading-dark { font-weight: 400; color: var(--text-dark); }
     .form-desc {
       font-size: 18px; font-weight: 200;
       line-height: 1.44; color: #111; margin-top: 32px;
@@ -638,7 +634,11 @@
       line-height: .98; letter-spacing: -0.02em;
       margin-bottom: 20px;
     }
-    .por-que-desc { font-size: 16px; font-weight: 200; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 32px; }
+    .por-que-desc { font-size: 16px; font-weight: 200; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 24px; }
+    /* Diferenciales: lista con check en verde agua de marca */
+    .por-que-list { list-style: none; display: grid; gap: 12px; margin-bottom: 32px; }
+    .por-que-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; font-weight: 600; color: #fff; line-height: 1.4; }
+    .por-que-check { flex-shrink: 0; margin-top: 1px; }
     .por-que-caption {
       display: flex; align-items: center; gap: 8px; width: fit-content;
       margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.2);
@@ -696,6 +696,8 @@
       display: flex; flex-direction: column; gap: 32px;
     }
     .testimonios-left { flex-shrink: 0; max-width: 440px; }
+    /* Título largo (frase): más pequeño y con interlineado legible */
+    #testimonios .section-title { font-size: 44px; line-height: 1.02; }
 
     /* Contador 01 / 03 */
     .test-counter {
@@ -803,7 +805,7 @@
       #testimonios { --test-step: 65; }
       .test-sticky { padding: 88px 20px 36px; }
       .testimonios-wrap { gap: 24px; }
-      #testimonios .section-title { font-size: 40px; line-height: .9; margin-bottom: 12px; }
+      #testimonios .section-title { font-size: 30px; line-height: 1.05; margin-bottom: 12px; }
       #testimonios .section-desc {
         font-size: 16px;
         display: -webkit-box; -webkit-box-orient: vertical;
@@ -818,6 +820,15 @@
       .test-card.is-active .test-avatar { width: 62px; height: 62px; }
       .test-text { font-size: 15px; -webkit-line-clamp: 1; line-clamp: 1; }
       .test-name { margin-top: 6px; font-size: 12px; }
+    }
+    /* Celulares bajos (≈ iPhone SE, 667px): compactar más para que el
+       bloque fijo de testimonios quepa en una sola pantalla */
+    @media (max-width: 767px) and (max-height: 700px) {
+      .test-sticky { padding-top: 80px; padding-bottom: 20px; }
+      .testimonios-wrap { gap: 16px; }
+      #testimonios .section-title { font-size: 26px; margin-bottom: 8px; }
+      #testimonios .section-desc { font-size: 15px; }
+      .test-counter { margin-top: 10px; }
     }
 
     @media (min-width: 768px) {
@@ -1481,9 +1492,11 @@
 <section id="form-section">
   <div class="form-wrap">
     <div class="form-left reveal-left">
-      <p class="form-heading-blue">sit amet</p>
-      <p class="form-heading-dark">Lorem ipsum</p>
-      <p class="form-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+      <h2 class="form-heading">
+        <span class="form-heading-blue">Recibe asesoría</span>
+        <span class="form-heading-dark">personalizada</span>
+      </h2>
+      <p class="form-desc">Cuéntanos qué quieres estudiar y un asesor de CEIPA te contactará con la información de admisiones, costos y financiación.</p>
     </div>
     <div class="form-card reveal-right" id="form-card">
       <div id="form-step-view">
@@ -1594,8 +1607,14 @@
     <div class="por-que-card reveal-right delay-200">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
       <span class="por-que-eyebrow">Formación con propósito</span>
-      <p class="por-que-title">¿Por qué CEIPA?</p>
-      <p class="por-que-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+      <h2 class="por-que-title">¿Por qué estudiar en CEIPA?</h2>
+      <p class="por-que-desc">En CEIPA encuentras una formación acreditada en alta calidad, conectada con el mundo real y diseñada para que conviertas el conocimiento en acción.</p>
+      <ul class="por-que-list">
+        <li><svg class="por-que-check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(149,255,245,.18)"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#95fff5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Universidad acreditada de alta calidad.</span></li>
+        <li><svg class="por-que-check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(149,255,245,.18)"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#95fff5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Respaldo internacional de Arizona State University.</span></li>
+        <li><svg class="por-que-check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(149,255,245,.18)"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#95fff5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Modalidades virtual y presencial.</span></li>
+        <li><svg class="por-que-check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(149,255,245,.18)"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#95fff5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Enfoque en empleabilidad y emprendimiento.</span></li>
+      </ul>
       <a href="#" class="por-que-caption">
         <span>Conoce más de CEIPA</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -1614,8 +1633,8 @@
     <div class="test-sticky" id="test-sticky">
       <div class="testimonios-wrap">
         <div class="testimonios-left">
-          <h2 class="section-title" id="testimonios-title">Testimonios</h2>
-          <p class="section-desc">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+          <h2 class="section-title" id="testimonios-title">Resultados que muestran una forma diferente de aprender</h2>
+          <p class="section-desc">Reconocimientos, alianzas estratégicas y cifras que reflejan el impacto de una universidad acreditada en alta calidad.</p>
           <p class="test-counter" aria-hidden="true">
             <span id="test-counter-now">01</span><span class="test-counter-sep">/</span><span id="test-counter-total">03</span>
           </p>
@@ -1637,8 +1656,8 @@
   <div class="financiacion-card reveal-scale">
     <div class="financiacion-inner">
       <div class="financiacion-text">
-        <h2 class="reveal-left">Financiación</h2>
-        <p class="reveal-left delay-100">Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna</p>
+        <h2 class="reveal-left">Financia tu educación sin complicaciones</h2>
+        <p class="reveal-left delay-100">En CEIPA tienes distintas opciones para financiar tu matrícula y avanzar en tu formación sin que el costo sea una barrera.</p>
         <div class="reveal-left delay-200" style="width:fit-content;">
           <a href="#" class="btn-filled">Quiero más información</a>
         </div>
@@ -1673,10 +1692,10 @@
 <section id="novedades">
   <div class="novedades-header reveal">
     <div>
-      <p class="section-title">Novedades</p>
-      <p class="section-desc">Entérate de lo último en CEIPA: eventos, logros académicos y todo lo que nos hace únicos.</p>
+      <h2 class="section-title">Novedades CEIPA</h2>
+      <p class="section-desc">Mantente al día con las noticias, logros y actividades más recientes de nuestra comunidad académica.</p>
     </div>
-    <a href="#" class="ver-todas">Ver todas</a>
+    <a href="#" class="ver-todas">Ver todas las novedades</a>
   </div>
   <div class="novedades-grid">
     <div class="novedad-card reveal delay-100">
@@ -1759,45 +1778,45 @@
     <div class="faqs-list reveal-right">
       <div class="faq-item">
         <button class="faq-btn">
-          ¿Cuáles son los requisitos de admisión?
+          ¿Cómo me inscribo en CEIPA?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Para ingresar a CEIPA debes presentar tu diploma de bachiller, documento de identidad, formulario de inscripción diligenciado y el pago de los derechos de inscripción. Algunos programas pueden requerir entrevista o prueba de conocimientos.</div>
+        <div class="faq-body">Elige tu programa y diligencia el formulario de inscripción en línea. Un asesor de CEIPA te contactará para acompañarte en los siguientes pasos: entrega de documentos (diploma de bachiller y documento de identidad), entrevista si el programa la requiere y pago de los derechos de inscripción.</div>
       </div>
       <div class="faq-item">
         <button class="faq-btn">
-          ¿Qué modalidades de estudio ofrece CEIPA?
+          ¿CEIPA está acreditada?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Ofrecemos modalidad presencial, virtual y a distancia. Nuestros programas están diseñados para que puedas estudiar según tu ritmo de vida, con flexibilidad de horarios y acceso a plataformas digitales de última generación.</div>
+        <div class="faq-body">Sí. La Fundación Universitaria CEIPA cuenta con acreditación de alta calidad otorgada por el Ministerio de Educación Nacional de Colombia y con el respaldo internacional de Arizona State University (ASU).</div>
       </div>
       <div class="faq-item">
         <button class="faq-btn">
-          ¿Qué opciones de financiación existen?
+          ¿Qué programas virtuales ofrece CEIPA?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Contamos con convenios con el ICETEX, créditos directos con la institución, becas por mérito académico y alianzas con entidades financieras para facilitar el acceso a la educación superior.</div>
+        <div class="faq-body">Tienes opciones virtuales en pregrados, especializaciones, maestrías y programas de extensión, diseñadas para que estudies sin pausar tu vida. Revisa la oferta completa en la sección Oferta Académica o habla con un asesor para encontrar el programa ideal para ti.</div>
       </div>
       <div class="faq-item">
         <button class="faq-btn">
-          ¿CEIPA está acreditada por el Ministerio de Educación?
+          ¿Cuál es el teléfono de contacto de CEIPA?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Sí. CEIPA cuenta con registro calificado y acreditación de alta calidad otorgados por el Ministerio de Educación Nacional de Colombia, además de reconocimientos internacionales que avalan la excelencia de nuestros programas.</div>
+        <div class="faq-body"><!-- PENDIENTE: confirmar el número oficial con Comunicaciones antes de publicar --> Comunícate con nuestros asesores al [teléfono por confirmar] o déjanos tus datos en el formulario de esta página y te llamamos.</div>
       </div>
       <div class="faq-item">
         <button class="faq-btn">
-          ¿Puedo homologar materias de otra universidad?
+          ¿CEIPA tiene sede en Medellín y Sabaneta?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Sí, CEIPA cuenta con un proceso formal de homologación y transferencia. Debes presentar los microcurrículos de las asignaturas cursadas y el comité académico evaluará cuáles aplican para cada programa.</div>
+        <div class="faq-body"><!-- PENDIENTE: confirmar si existe sede en Medellín; el manual de marca solo registra la de Sabaneta --> Nuestra sede está en la Cl. 77 Sur #40-165, Sabaneta, Antioquia, en el Valle de Aburrá y a pocos minutos de Medellín. Además, puedes estudiar en modalidad virtual desde cualquier lugar.</div>
       </div>
       <div class="faq-item">
         <button class="faq-btn">
-          ¿Qué es el modelo "Powered by Arizona State University"?
+          ¿Qué opciones de financiación ofrece CEIPA?
           <span class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#354ee7" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
-        <div class="faq-body">Es una alianza estratégica con Arizona State University (ASU), reconocida como la universidad más innovadora de EE. UU. Esta colaboración nos permite incorporar metodologías, recursos académicos y certificaciones de clase mundial en nuestros programas.</div>
+        <div class="faq-body">Puedes financiar tu matrícula con ICETEX, créditos con nuestros aliados financieros y entidades como Sufi, Sistecrédito, Comfama y Coomeva, entre otras, además de becas y planes de pago. Un asesor te ayuda a elegir la opción que mejor se ajusta a ti.</div>
       </div>
     </div>
   </div>
@@ -2013,7 +2032,8 @@
       overlayMobile: 'none',
     },
     {
-      prefix: 'Lorem ', highlight: 'hasit amet consectetur\nadipiscing elit',
+      prefix: 'Estudia en CEIPA: ', highlight: 'donde aprendes haciendo desde el primer día.',
+      desc: 'Una formación conectada con el mundo empresarial, diseñada para convertir el conocimiento en experiencia.',
       dark: false, glassBtn: false,
       overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
       overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.88) 0%, rgba(255,255,255,.62) 40%, rgba(255,255,255,.25) 62%, transparent 85%)',
@@ -2042,6 +2062,8 @@
   const heroOverlay   = document.getElementById('hero-overlay');
   const heroOverlayM  = document.getElementById('hero-overlay-mobile');
   const heroCta       = document.getElementById('hero-cta');
+  const heroDesc      = document.querySelector('.hero-desc');
+  const heroDescDefault = heroDesc.textContent;   // texto lorem para slides sin `desc`
   const heroBgs       = document.querySelectorAll('.hero-bg');
   const heroPrev      = document.getElementById('hero-prev');
   const heroNext      = document.getElementById('hero-next');
@@ -2061,6 +2083,7 @@
     const s = heroSlides[idx];
     heroPrefix.textContent    = s.prefix;
     heroHighlight.textContent = s.highlight;
+    heroDesc.textContent      = s.desc || heroDescDefault;
     heroOverlay.style.background  = s.overlay;
     heroOverlayM.style.background = s.overlayMobile;
     heroPrefix.style.color    = s.dark ? '#fff' : '#111';

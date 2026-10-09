@@ -260,6 +260,13 @@
     .hero-bg.active { opacity: 1; }
     /* Imágenes 16:9 con el rostro arriba: subir el encuadre para no cortar la cabeza */
     .hero-bg--top { object-position: 50% 25%; }
+    /* Móvil: imagen anclada más abajo (la parte superior de la foto es blanca)
+       para que la persona no quede debajo del botón; se funde arriba con el fondo */
+    .hero-bg-mobile.hero-bg--low {
+      top: 18%; height: 82%; object-position: 50% 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%);
+              mask-image: linear-gradient(to bottom, transparent 0%, #000 12%);
+    }
     .hero-bg-mobile { display: block; }
     .hero-bg-desktop { display: none; }
 
@@ -780,6 +787,13 @@
       transition: width .45s ease, height .45s ease;
     }
     .test-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    /* Avatar provisional con iniciales (testimonios sin foto) */
+    #testimonios.is-measuring * { transition: none !important; }
+    .test-avatar--initials {
+      display: flex; align-items: center; justify-content: center;
+      background: #eef1fd; color: var(--text-dark);
+      font-weight: 700; font-size: 20px; letter-spacing: .02em;
+    }
     .test-card.is-active .test-avatar { width: 76px; height: 76px; }
 
     .test-body { flex: 1; min-width: 0; }
@@ -789,8 +803,10 @@
       display: -webkit-box; -webkit-box-orient: vertical;
       -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
     }
+    /* El activo muestra tantas líneas como quepan: --test-lines lo calcula
+       measureTest() según la altura de la pantalla (none = texto completo) */
     .test-card.is-active .test-text {
-      -webkit-line-clamp: unset; line-clamp: unset; overflow: visible;
+      -webkit-line-clamp: var(--test-lines, none); line-clamp: var(--test-lines, none); overflow: hidden;
     }
     .test-name {
       font-size: 13px; font-weight: 600;
@@ -829,6 +845,11 @@
       #testimonios .section-title { font-size: 26px; margin-bottom: 8px; }
       #testimonios .section-desc { font-size: 15px; }
       .test-counter { margin-top: 10px; }
+      .testimonios-list { gap: 8px; }
+      .test-card { padding: 10px 14px; }
+      .test-avatar { width: 40px; height: 40px; }
+      .test-card.is-active .test-avatar { width: 52px; height: 52px; }
+      .test-avatar--initials { font-size: 16px; }
     }
 
     @media (min-width: 768px) {
@@ -842,6 +863,16 @@
       .test-text { font-size: 18px; }
       .testimonios-list { gap: 16px; }
       .test-card { padding: 22px 24px; }
+    }
+    /* Escritorio de poca altura (portátiles 1366×768): tarjetas más compactas
+       e inactivas en 1 línea, para que el efecto de scroll siga activo */
+    @media (min-width: 1024px) and (max-height: 820px) {
+      .test-sticky { padding: 96px 64px 32px; }
+      .testimonios-list { gap: 10px; }
+      .test-card { padding: 14px 20px; }
+      .test-text { font-size: 16px; -webkit-line-clamp: 1; line-clamp: 1; }
+      .test-avatar { width: 52px; height: 52px; }
+      .test-card.is-active .test-avatar { width: 64px; height: 64px; }
     }
 
     /* Modo estático: si el contenido no cabe en una pantalla el JS añade
@@ -887,7 +918,7 @@
     .financiacion-text { flex: 1; max-width: 560px; padding: 0 24px; }
     .financiacion-text h2 {
       font-weight: 700;
-      color: var(--text-dark); font-size: 40px; line-height: 1.05;
+      color: var(--blue);   /* #354ee7, azul real de marca */ font-size: 40px; line-height: 1.05;
       margin-bottom: 16px;
     }
     .financiacion-text p {
@@ -1292,6 +1323,21 @@
       transition: background .2s;
     }
     .newsletter-row button:hover { background: var(--blue-dark); }
+    /* Sedes + links de interés */
+    .footer-sedes {
+      display: grid; grid-template-columns: 1fr; gap: 32px;
+      margin-top: 40px; padding-top: 32px;
+      border-top: 1px solid rgba(0,0,0,.1);
+    }
+    .sede-sub {
+      font-size: 13px; font-weight: 600; color: var(--text-dark);
+      margin: 14px 0 8px;
+    }
+    .footer-sede .footer-col-title + .sede-sub { margin-top: 0; }
+    .footer-col a.sede-link {
+      display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+    }
+    .sede-ico { flex-shrink: 0; margin-top: 2px; color: var(--blue); }
     .footer-bottom {
       max-width: 1440px; margin: 0 auto;
       padding: 16px 24px;
@@ -1306,9 +1352,11 @@
 
     @media (min-width: 768px) {
       .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-sedes { grid-template-columns: 1fr 1fr; }
     }
     @media (min-width: 1024px) {
       .footer-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      .footer-sedes { grid-template-columns: 1fr 1fr 1fr; }
       .footer-main { padding: 48px 64px; }
       .footer-legal { padding: 32px 64px; }
       .footer-bottom { flex-direction: row; justify-content: space-between; padding: 16px 64px; }
@@ -1455,14 +1503,12 @@
 <!-- ─── HERO (foto de fondo completa · carrusel) ────────── -->
 <section id="hero">
   <!-- Fondos — crossfade por slide, JS alterna la clase .active -->
-  <img src="src/imports/image-1.png" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="1" />
-  <img src="src/imports/image-2.png" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="1" />
-  <img src="src/imports/hero-slide2-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
-  <img src="src/imports/hero-slide2-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
-  <img src="src/imports/hero-slide3-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
-  <img src="src/imports/hero-slide3-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top active" data-slide="0" />
-  <img src="src/imports/hero-slide4-franjas-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="3" />
-  <img src="src/imports/hero-slide4-luz-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top" data-slide="3" />
+  <img src="src/imports/hero-slide2-aula-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile hero-bg--low" data-slide="1" />
+  <img src="src/imports/hero-slide2-aula-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top" data-slide="1" />
+  <img src="src/imports/hero-slide3-claro-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
+  <img src="src/imports/hero-slide3-claro-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
+  <img src="src/imports/hero-slide4-franjas-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
+  <img src="src/imports/hero-slide4-luz-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top active" data-slide="0" />
 
   <div class="hero-overlay" id="hero-overlay"></div>
   <div class="hero-overlay-mobile" id="hero-overlay-mobile"></div>
@@ -1481,7 +1527,7 @@
           <span id="hero-prefix">La </span><span id="hero-highlight">excelencia académica&#10;te espera hoy</span>
         </h1>
       </div>
-      <p class="hero-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur sed lectus nec tempor. In quis tellus id sem placerat dignissim laoreet at ligula.</p>
+      <p class="hero-desc">Una formación conectada con el mundo empresarial, diseñada para convertir el conocimiento en experiencia.</p>
       <a href="#" class="hero-cta" id="hero-cta">Quiero más información</a>
       <div class="hero-dots" id="hero-dots"></div>
     </div>
@@ -1868,6 +1914,39 @@
         </div>
       </div>
     </div>
+    <!-- Sedes y links de interés -->
+    <div class="footer-sedes">
+      <div class="footer-col footer-sede">
+        <p class="footer-col-title">Sede Medellín</p>
+        <p class="sede-sub">Líneas de atención estudiantes</p>
+        <a class="sede-link" href="https://wa.me/573226095223" target="_blank" rel="noopener" aria-label="WhatsApp 322 609 5223"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3Z"/></svg><span>322 609 5223</span></a>
+        <a class="sede-link" href="tel:+576043056100"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg><span>604 305 6100 · Opción 2</span></a>
+        <p class="sede-sub">Líneas de atención aspirantes</p>
+        <a class="sede-link" href="https://wa.me/573217115402" target="_blank" rel="noopener" aria-label="WhatsApp 321 711 5402"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3Z"/></svg><span>321 711 5402</span></a>
+        <p class="sede-sub">¿Cómo llegar?</p>
+        <a class="sede-link sede-link--map" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%2077%20Sur%2040-165%2C%20Sabaneta%2C%20Antioquia" target="_blank" rel="noopener"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Calle 77 Sur No. 40 – 165, Sabaneta</span></a>
+      </div>
+      <div class="footer-col footer-sede">
+        <p class="footer-col-title">Sede Barranquilla</p>
+        <p class="sede-sub">Líneas de atención estudiantes y aspirantes</p>
+        <a class="sede-link" href="https://wa.me/573226095223" target="_blank" rel="noopener" aria-label="WhatsApp 322 609 5223"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3Z"/></svg><span>322 609 5223</span></a>
+        <a class="sede-link" href="tel:+576053111050"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg><span>(605) 311 10 50</span></a>
+        <p class="sede-sub">Líneas de atención aspirantes</p>
+        <a class="sede-link" href="https://wa.me/573217115402" target="_blank" rel="noopener" aria-label="WhatsApp 321 711 5402"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3Z"/></svg><span>321 711 5402</span></a>
+        <p class="sede-sub">¿Cómo llegar?</p>
+        <a class="sede-link sede-link--map" href="https://www.google.com/maps/search/?api=1&amp;query=Carrera%2057%2072-143%2C%20Barrio%20El%20Prado%2C%20Barranquilla" target="_blank" rel="noopener"><svg class="sede-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Carrera 57 No. 72 – 143, Barrio El Prado</span></a>
+      </div>
+      <!-- PENDIENTE: URLs reales de los links de interés -->
+      <div class="footer-col">
+        <p class="footer-col-title">Links de interés</p>
+        <a href="#">The Founders Degree</a>
+        <a href="#">ESIC</a>
+        <a href="#">Tracendia</a>
+        <a href="#">FE CEIPA</a>
+        <a href="#">CRAI+I CEIPA</a>
+        <a href="#">Buzón de PQRS</a>
+      </div>
+    </div>
   </div>
   <div class="footer-legal">
     <p>Fundación Universitaria CEIPA, Institución de Educación Superior VIGILADA MINEDUCACIÓN SNIES 2727</p>
@@ -2024,12 +2103,11 @@
   const heroSlides = [
     {
       prefix: 'La ', highlight: 'excelencia académica\nte espera hoy',
-      dark: true, glassBtn: true,
-      /* La imagen ya trae una zona azul de marca para el texto: sin velo oscuro.
-         En desktop solo se tiñe de azul el borde izquierdo para que las franjas
-         claras de la textura no compitan con el párrafo. */
-      overlay: 'linear-gradient(to right, rgba(66,72,236,.75) 0%, rgba(66,72,236,.45) 18%, transparent 32%)',
-      overlayMobile: 'none',
+      /* Fondo claro (barridos de luz): texto oscuro. La imagen móvil ya trae
+         arriba la zona clara con franjas: solo un velo blanco suave. */
+      dark: false, glassBtn: false,
+      overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
+      overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.35) 0%, rgba(255,255,255,.35) 40%, transparent 55%)',
     },
     {
       prefix: 'Estudia en CEIPA: ', highlight: 'donde aprendes haciendo desde el primer día.',
@@ -2040,17 +2118,9 @@
     },
     {
       prefix: 'La ', highlight: 'innovación que\ntransforma vidas',
-      dark: true, glassBtn: true,
-      overlay: 'linear-gradient(to right, rgba(0,0,0,.52) 0%, rgba(0,0,0,.22) 58%, transparent 100%)',
-      /* La imagen móvil ya trae la zona azul de marca para el texto */
-      overlayMobile: 'none',
-    },
-    {
-      prefix: 'Lorem ', highlight: 'ipsum dolor\nsit amet',
+      /* Fondo claro: texto oscuro, igual que los otros slides claros. La imagen
+         móvil ya trae arriba la zona clara con franjas: solo un velo suave. */
       dark: false, glassBtn: false,
-      /* Fondo claro (barridos de luz): texto oscuro, igual que el slide 1.
-         La imagen móvil ya trae arriba la zona clara con franjas para el texto:
-         solo un velo blanco suave para que el párrafo se lea sobre las franjas. */
       overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
       overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.35) 0%, rgba(255,255,255,.35) 40%, transparent 55%)',
     },
@@ -2063,7 +2133,7 @@
   const heroOverlayM  = document.getElementById('hero-overlay-mobile');
   const heroCta       = document.getElementById('hero-cta');
   const heroDesc      = document.querySelector('.hero-desc');
-  const heroDescDefault = heroDesc.textContent;   // texto lorem para slides sin `desc`
+  const heroDescDefault = heroDesc.textContent;   // subtítulo común para slides sin `desc` propio
   const heroBgs       = document.querySelectorAll('.hero-bg');
   const heroPrev      = document.getElementById('hero-prev');
   const heroNext      = document.getElementById('hero-next');
@@ -2107,6 +2177,28 @@
   buildHeroDots();
   goHero(0);
   setInterval(() => goHero((heroActive + 1) % heroSlides.length), 4000);
+
+  /* Móvil: el bloque del título reserva el alto del título más largo, para que
+     párrafo, botón y puntos no salten al cambiar de slide (desktop ya usa un
+     alto fijo por CSS). Se recalcula al cargar fuentes y al cambiar el ancho. */
+  const heroClip = document.querySelector('.hero-title-clip');
+  const heroTitle = document.getElementById('hero-title');
+  function measureHeroTitle() {
+    heroClip.style.minHeight = '';
+    if (window.innerWidth >= 768) return;
+    const cur = [heroPrefix.textContent, heroHighlight.textContent];
+    let max = 0;
+    heroSlides.forEach(s => {
+      heroPrefix.textContent = s.prefix; heroHighlight.textContent = s.highlight;
+      max = Math.max(max, heroTitle.offsetHeight);
+    });
+    [heroPrefix.textContent, heroHighlight.textContent] = cur;
+    heroClip.style.minHeight = max + 'px';
+  }
+  measureHeroTitle();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureHeroTitle);
+  let heroResizeTimer;
+  window.addEventListener('resize', () => { clearTimeout(heroResizeTimer); heroResizeTimer = setTimeout(measureHeroTitle, 150); });
 
   /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
   const ofertaSlides = [
@@ -2295,9 +2387,10 @@
 
   /* ── TESTIMONIOS (sticky · dirigido por scroll) ─────── */
   const testimonials = [
-    { name: 'María García',  role: 'Egresada Pregrado',  text: 'Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo dignissim magna aliquam.', img: 'src/imports/testimonios/maria-garcia.webp' },
-    { name: 'Carlos López',  role: 'Egresado Posgrado',  text: 'La formación en CEIPA transformó mi carrera profesional. El enfoque práctico y empresarial marca la diferencia desde el primer semestre.',              img: 'src/imports/testimonios/carlos-lopez.webp' },
-    { name: 'Ana Martínez',  role: 'Estudiante activa',  text: 'Vel tortor eleifend ornare feugiat fusce sem montes vestibulum faucibus, placerat congue lobortis accumsan pharetra commodo.',                          img: 'src/imports/testimonios/ana-martinez.webp' },
+    { name: 'Maira Isabela', role: 'Derecho',            text: 'Este programa me permitió complementar mi experiencia profesional con una forma de pensar más jurídica, crítica y estructurada, algo que aplico todo el tiempo en mi trabajo, donde tengo contacto permanente con casos y negociaciones. La metodología me ha exigido no quedarme solo con lo que dice una norma, sino aprender a interpretarla y argumentar. Le diría que lo haga si realmente siente vocación por el Derecho, exige compromiso y disciplina, pero permite descubrir capacidades que uno no sabía que tenía.', initials: 'MI' },
+    { name: 'Melina',        role: 'Derecho',            text: 'Este programa me dio la posibilidad de adquirir conocimientos y herramientas que puedo aplicar tanto en mi formación como estudiante de Derecho como en el ámbito laboral. Destaco especialmente la metodología, porque permite relacionar los conocimientos teóricos con casos y situaciones del ámbito profesional real. Le diría a quien lo esté pensando que lo haga, es una buena oportunidad para complementar la carrera y aprender cosas nuevas que realmente se aplican en el mundo laboral.', initials: 'ME' },
+    { name: 'Eliana Andrea', role: 'Ingeniería Industrial', text: 'Este programa me dio una visión mucho más global del entorno, para abordar de manera estratégica los retos que se presentan en las organizaciones. La metodología es excelente, y se nota que la docente tiene experiencia, conocimiento y le encanta lo que hace. Elegir el camino para crecer profesionalmente no siempre es fácil, pero si me preguntaran qué opción recomendaría, sin duda hablaría de CEIPA.', initials: 'EA' },
+    { name: 'Juan Carlos',   role: 'Ingeniería Industrial', text: 'Cada enfoque y conocimiento que se transmite en este programa amplía la forma de ver las cosas en la industria, y eso me ayudó a forjar una nueva etapa profesional. Se aprovecha muy bien la tecnología, y las experiencias que comparten los profesores hacen que cada clase sea amena. Es la mejor opción para crecer y lograr las metas que uno se propone.', initials: 'JC' },
   ];
 
   const testSection = document.getElementById('testimonios');
@@ -2327,9 +2420,17 @@
     const card = document.createElement('article');
     card.className = 'test-card';
     card.innerHTML =
-      '<div class="test-avatar"><img alt="" loading="lazy" width="76" height="76"></div>' +
+      '<div class="test-avatar"></div>' +
       '<div class="test-body"><p class="test-text"></p><p class="test-name"></p></div>';
-    card.querySelector('img').src = t.img;              // textContent/src: sin innerHTML con datos
+    const avatar = card.querySelector('.test-avatar');
+    if (t.img) {                                         // textContent/src: sin innerHTML con datos
+      const img = document.createElement('img');
+      img.alt = ''; img.loading = 'lazy'; img.width = 76; img.height = 76; img.src = t.img;
+      avatar.appendChild(img);
+    } else {                                             // provisional mientras llega la foto real
+      avatar.classList.add('test-avatar--initials');
+      avatar.textContent = t.initials;
+    }
     card.querySelector('.test-text').textContent = t.text;
     card.querySelector('.test-name').textContent = t.name + ' — ' + t.role;
     card.addEventListener('click', () => goTest(i));
@@ -2408,14 +2509,30 @@
 
   /* Si el bloque no cabe en una pantalla (móviles bajos, zoom alto, texto
      grande) se degrada a lista estática en vez de romper el sticky. */
+  /* Antes de rendirse, recorta el texto del testimonio activo: se mide con el
+     testimonio más largo activo y se bajan líneas hasta que el bloque quepa. */
+  const longest = testimonials.reduce((m, t, i, a) => t.text.length > a[m].text.length ? i : m, 0);
+  const LINE_STEPS = ['none', 10, 8, 7, 6, 5, 4, 3, 2];
   function measureTest() {
     const wrap = testSticky.querySelector('.testimonios-wrap');
     testSection.classList.remove('is-static');
     const cs = getComputedStyle(testSticky);
     const chrome = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-    const fits = wrap.getBoundingClientRect().height + chrome <= window.innerHeight;
+    const prev = testActive;
+    cards.forEach((c, i) => c.classList.toggle('is-active', i === longest));
+    testSection.classList.add('is-measuring');           // sin transiciones al medir
+    let fits = false;
+    for (const lines of LINE_STEPS) {
+      testSection.style.setProperty('--test-lines', lines);
+      if (wrap.getBoundingClientRect().height + chrome <= window.innerHeight) { fits = true; break; }
+    }
+    testSection.classList.remove('is-measuring');
+    cards.forEach((c, i) => c.classList.toggle('is-active', i === prev));
     scrollDriven = fits && !reduceMotion.matches;
-    if (!scrollDriven) testSection.classList.add('is-static');
+    if (!scrollDriven) {                                  // lista estática: texto completo
+      testSection.classList.add('is-static');
+      testSection.style.setProperty('--test-lines', 'none');
+    }
     readScroll();
   }
 

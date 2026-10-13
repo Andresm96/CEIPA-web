@@ -122,14 +122,14 @@
     }
     .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; }
     .nav-dropdown a {
-      display: block; padding: 8px 20px;
+      display: block; padding: 8px 20px; white-space: nowrap;
       font-size: 14px; color: #444;
       transition: color .2s, background .2s;
     }
     .nav-dropdown a:hover { color: var(--blue); background: #eef1fd; }
     .nav-dropdown-item-group { position: relative; }
     .nav-dropdown-group-trigger {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; white-space: nowrap;
       padding: 8px 20px; font-size: 14px; color: #444; cursor: default;
       transition: color .2s, background .2s;
     }
@@ -1279,7 +1279,9 @@
       display: grid; grid-template-columns: 1fr;
       gap: 40px;
     }
-    .footer-logo { height: 40px; object-fit: contain; margin-bottom: 16px; }
+    /* Aplicación principal (escudo + CEIPA + Powered by ASU): más alto para que el
+       descriptor «Powered by Arizona State University» sea legible */
+    .footer-logo { height: 72px; width: auto; max-width: 100%; object-fit: contain; margin-bottom: 16px; }
     .footer-iso {
       height: 90px; object-fit: contain;
       background: #fff; border-radius: 8px; padding: 8px;
@@ -1406,33 +1408,55 @@
       <div class="nav-item">
         <button>Estudiantes <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="nav-dropdown">
-          <a href="#">Portal académico</a>
-          <a href="#">Bienestar universitario</a>
-          <a href="#">Egresados</a>
+          <a href="#">Servicios e información para estudiantes</a>
         </div>
       </div>
       <div class="nav-item">
         <button>CEIPA <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="nav-dropdown">
-          <a href="#">Institución</a>
-          <a href="#">Entorno empresarial</a>
-          <a href="#">Actualidad</a>
-          <a href="#">Contacto</a>
+          <a href="#">Nosotros</a>
+          <a href="#">Acreditación</a>
+          <a href="#">Historia</a>
+          <a href="#">Rectoría</a>
+          <a href="#">Filosofía institucional</a>
+          <a href="#">Sedes</a>
+          <a href="#">Sostenibilidad</a>
+          <a href="#">Transparencia / Normatividad</a>
+          <div class="nav-dropdown-item-group">
+            <div class="nav-dropdown-group-trigger">
+              CRAI
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+            </div>
+            <div class="nav-dropdown-flyout">
+              <a href="#">ASU</a>
+            </div>
+          </div>
+          <a href="#">Legis</a>
         </div>
       </div>
       <div class="nav-item">
         <button>Entorno empresarial <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="nav-dropdown">
-          <a href="#">Empresas aliadas</a>
-          <a href="#">Formación corporativa</a>
+          <a href="#">Empresas</a>
+          <a href="#">Alumni</a>
+          <div class="nav-dropdown-item-group">
+            <div class="nav-dropdown-group-trigger">
+              CIEET
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+            </div>
+            <div class="nav-dropdown-flyout">
+              <a href="#">SolversLab</a>
+            </div>
+          </div>
         </div>
       </div>
+      <!-- PENDIENTE: nombre definitivo del menú ("Conoce …" según el documento) -->
       <div class="nav-item">
         <button>Actualidad <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="nav-dropdown">
-          <a href="#">Noticias</a>
-          <a href="#">Eventos</a>
           <a href="#">Blog</a>
+          <a href="#">Novedades</a>
+          <a href="#">Eventos</a>
         </div>
       </div>
     </div>
@@ -1474,25 +1498,54 @@
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-estudiantes">Estudiantes <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="mob-sub" id="sub-estudiantes">
-          <a href="#">Portal académico</a><a href="#">Bienestar universitario</a><a href="#">Egresados</a>
+          <a href="#">Servicios e información para estudiantes</a>
         </div>
       </div>
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-ceipa">CEIPA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="mob-sub" id="sub-ceipa">
-          <a href="#">Institución</a><a href="#">Entorno empresarial</a><a href="#">Actualidad</a><a href="#">Contacto</a>
+          <a href="#">Nosotros</a>
+          <a href="#">Acreditación</a>
+          <a href="#">Historia</a>
+          <a href="#">Rectoría</a>
+          <a href="#">Filosofía institucional</a>
+          <a href="#">Sedes</a>
+          <a href="#">Sostenibilidad</a>
+          <a href="#">Transparencia / Normatividad</a>
+          <div class="mob-subgroup">
+            <button class="mob-subgroup-btn" data-subtarget="subgroup-crai">
+              CRAI
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="mob-subgroup-list" id="subgroup-crai">
+              <a href="#">ASU</a>
+            </div>
+          </div>
+          <a href="#">Legis</a>
         </div>
       </div>
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-entorno">Entorno empresarial <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="mob-sub" id="sub-entorno">
-          <a href="#">Empresas aliadas</a><a href="#">Formación corporativa</a>
+          <a href="#">Empresas</a>
+          <a href="#">Alumni</a>
+          <div class="mob-subgroup">
+            <button class="mob-subgroup-btn" data-subtarget="subgroup-cieet">
+              CIEET
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="mob-subgroup-list" id="subgroup-cieet">
+              <a href="#">SolversLab</a>
+            </div>
+          </div>
         </div>
       </div>
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-actualidad">Actualidad <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
         <div class="mob-sub" id="sub-actualidad">
-          <a href="#">Noticias</a><a href="#">Eventos</a><a href="#">Blog</a>
+          <a href="#">Blog</a>
+          <a href="#">Novedades</a>
+          <a href="#">Eventos</a>
         </div>
       </div>
       <div class="mob-cta-wrap"><a href="#" class="mob-cta">Inscríbete</a></div>
@@ -1887,7 +1940,7 @@
     <div class="footer-grid">
       <!-- Brand -->
       <div>
-        <img src="src/imports/logo-ceipa-azul-png.png" alt="CEIPA" class="footer-logo" />
+        <img src="src/imports/footer/logo-ceipa-asu-azul.png" alt="CEIPA – Powered by Arizona State University" class="footer-logo" width="720" height="211" />
         <img src="src/imports/footer/certificado-iso-9001-2015.png" alt="Certificado ISO 9001:2015 — Bureau Veritas" class="footer-iso" />
       </div>
       <!-- Estudia en CEIPA -->

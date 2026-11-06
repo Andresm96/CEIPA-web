@@ -457,14 +457,17 @@
     }
 
     /* ─── OFERTA ACADÉMICA (sticky · dirigido por scroll) ────── */
-    #oferta { --oferta-count: 6; --oferta-step: 70; }
+    /* --oferta-step = alto de scroll (en vh) que dura CADA oferta. El riel mide
+       100vh (pantalla fija) + N pasos, así todas las ofertas —la última incluida—
+       reciben la misma cantidad de scroll. Más paso = avance más lento. */
+    #oferta { --oferta-count: 6; --oferta-step: 110; }
     .oferta-track {
       position: relative;
-      height: calc(100vh + (var(--oferta-count) - 1) * var(--oferta-step) * 1vh);
+      height: calc(100vh + var(--oferta-count) * var(--oferta-step) * 1vh);
     }
     @supports (height: 100svh) {
       .oferta-track {
-        height: calc(100svh + (var(--oferta-count) - 1) * var(--oferta-step) * 1svh);
+        height: calc(100svh + var(--oferta-count) * var(--oferta-step) * 1svh);
       }
     }
     .oferta-sticky {
@@ -572,7 +575,7 @@
     .oferta-card {
       position: absolute; bottom: 0; width: 256px; border-radius: 8px; overflow: hidden;
       box-shadow: 0 0 50px rgba(0,0,0,.15); cursor: pointer;
-      transition: height .3s ease-in-out .2s, left .5s ease;
+      transition: height .3s ease-in-out .2s, left .5s ease, opacity .3s ease;
     }
     .oferta-card.is-active { height: 410px; }
     .oferta-card:not(.is-active) { height: 320px; }
@@ -596,8 +599,8 @@
       .oferta-mob-thumbs { display: none; }
       .oferta-right { display: flex; width: 50%; }
     }
-    @media (max-width: 767px) { #oferta { --oferta-step: 60; } }
-    @media (min-width: 1024px) { #oferta { --oferta-step: 85; } }
+    @media (max-width: 767px) { #oferta { --oferta-step: 100; } }
+    @media (min-width: 1024px) { #oferta { --oferta-step: 120; } }
 
     /* Static mode (reduced motion or content that doesn't fit): no pinning. */
     #oferta.is-static .oferta-track { height: auto; }
@@ -676,17 +679,17 @@
     }
 
     /* --test-count lo inyecta el JS (nº de testimonios).
-       Altura del riel = 1 pantalla + 1 tramo de scroll por cada testimonio
-       extra. Cada tramo equivale a --test-step de alto de viewport. */
-    #testimonios { --test-count: 3; --test-step: 70; }
+       Altura del riel = 1 pantalla + 1 tramo de scroll por testimonio.
+       Cada tramo equivale a --test-step de alto de viewport (más = más lento). */
+    #testimonios { --test-count: 3; --test-step: 100; }
 
     .test-track {
       position: relative;
-      height: calc(100vh + (var(--test-count) - 1) * var(--test-step) * 1vh);
+      height: calc(100vh + var(--test-count) * var(--test-step) * 1vh);
     }
     @supports (height: 100svh) {
       .test-track {
-        height: calc(100svh + (var(--test-count) - 1) * var(--test-step) * 1svh);
+        height: calc(100svh + var(--test-count) * var(--test-step) * 1svh);
       }
     }
 
@@ -818,7 +821,7 @@
     /* Móvil: hay que caber en una pantalla para que el pinning funcione,
        así que se compacta la columna izquierda y las tarjetas inactivas. */
     @media (max-width: 767px) {
-      #testimonios { --test-step: 65; }
+      #testimonios { --test-step: 90; }
       .test-sticky { padding: 88px 20px 36px; }
       .testimonios-wrap { gap: 24px; }
       #testimonios .section-title { font-size: 30px; line-height: 1.05; margin-bottom: 12px; }
@@ -857,7 +860,7 @@
       .testimonios-wrap { gap: 40px; }
     }
     @media (min-width: 1024px) {
-      #testimonios { --test-step: 80; }
+      #testimonios { --test-step: 110; }
       .test-sticky { padding: 112px 64px 64px; }
       .testimonios-wrap { flex-direction: row; gap: 64px; align-items: center; }
       .test-text { font-size: 18px; }
@@ -1664,8 +1667,8 @@
         <div class="oferta-left">
           <div class="oferta-dotbar" id="oferta-dotbar"></div>
           <div class="oferta-text">
-            <h2 class="oferta-prog-title" id="oferta-title">Pregrados</h2>
-            <p class="oferta-prog-desc" id="oferta-desc">Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.</p>
+            <h2 class="oferta-prog-title" id="oferta-title">Técnicas Laborales</h2>
+            <p class="oferta-prog-desc" id="oferta-desc">Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.</p>
             <a class="oferta-prog-btn" id="oferta-cta" href="#" target="_blank" rel="noopener">Ver oferta</a>
             <div class="oferta-mobile-controls">
               <div class="oferta-mobile-dots" id="oferta-mobile-dots"></div>
@@ -1701,7 +1704,7 @@
 <section id="por-que">
   <div class="por-que-row">
     <div class="por-que-media reveal-scale">
-      <img src="src/imports/porque-ceipa.webp" alt="Estudiantes de CEIPA junto a una impresora 3D en un laboratorio" />
+      <img src="src/imports/porque-ceipa-v2.webp" alt="Dos estudiantes de CEIPA buscando libros en la biblioteca" />
     </div>
     <div class="por-que-card reveal-right delay-200">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
@@ -2255,12 +2258,12 @@
 
   /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
   const ofertaSlides = [
-    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-v2-bg.webp', card: 'src/imports/oferta-pregrados-v2-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
-    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-v2-bg.webp', card: 'src/imports/oferta-posgrados-v2-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
-    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-bg.webp', card: 'src/imports/oferta-tecnicas-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
-    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-v2-bg.webp', card: 'src/imports/oferta-educontinua-v2-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
-    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-v2-bg.webp', card: 'src/imports/oferta-maestrias-v2-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
-    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-bg.webp', card: 'src/imports/oferta-idiomas-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
+    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-v2-bg.webp', card: 'src/imports/oferta-tecnicas-v2-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
+    { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-v3-bg.webp', card: 'src/imports/oferta-pregrados-v3-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
+    { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-v3-bg.webp', card: 'src/imports/oferta-posgrados-v3-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
+    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-v3-bg.webp', card: 'src/imports/oferta-maestrias-v3-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
+    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-v3-bg.webp', card: 'src/imports/oferta-educontinua-v3-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
+    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-v2-bg.webp', card: 'src/imports/oferta-idiomas-v2-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
   ];
   let ofertaActive = 0, ofertaAnimating = false;
   const ofertaSection   = document.getElementById('oferta');
@@ -2326,34 +2329,47 @@
   });
   const ofertaMobThumbEls = ofertaMobThumbs.querySelectorAll('.oferta-mob-thumb');
 
-  function buildCardStack() {
-    ofertaCardStack.innerHTML = '';
-    const CARD_W = 256, GAP = 20;
-    for (let pos = 0; pos < 4; pos++) {
-      const idx = (ofertaActive + pos) % ofertaN;
-      const s = ofertaSlides[idx];
-      const isActive = pos === 0;
-      const card = document.createElement('div');
-      card.className = 'oferta-card' + (isActive ? ' is-active' : '');
-      card.style.left = (pos * (CARD_W + GAP)) + 'px';
-      card.innerHTML = `
-        <a href="${s.url}" target="_blank" rel="noopener" aria-label="Ver oferta: ${s.title}">
-          <img src="${s.card}" alt="${s.title}">
-          <div class="oferta-card-shade"></div>
-          <div class="oferta-card-info">
-            <p class="oferta-card-title">${s.title}</p>
-            <p class="oferta-card-tag">${s.tag}</p>
-          </div>
-        </a>`;
-      ofertaCardStack.appendChild(card);
-    }
+  /* Tarjetas del carrusel: una por oferta, construidas UNA sola vez. Al cambiar
+     de oferta solo se reposicionan (`left`), así la transición CSS las desliza;
+     antes se recreaban en cada cambio y la pila "saltaba" de golpe. */
+  const CARD_W = 256, CARD_GAP = 20, CARDS_VISIBLE = 4;
+  const ofertaCardEls = ofertaSlides.map((s) => {
+    const card = document.createElement('div');
+    card.className = 'oferta-card';
+    card.innerHTML = `
+      <a href="${s.url}" target="_blank" rel="noopener" aria-label="Ver oferta: ${s.title}">
+        <img src="${s.card}" alt="${s.title}">
+        <div class="oferta-card-shade"></div>
+        <div class="oferta-card-info">
+          <p class="oferta-card-title">${s.title}</p>
+          <p class="oferta-card-tag">${s.tag}</p>
+        </div>
+      </a>`;
+    ofertaCardStack.appendChild(card);
+    return card;
+  });
+  function layoutCardStack(prev) {
+    ofertaCardEls.forEach((card, i) => {
+      const pos = (i - ofertaActive + ofertaN) % ofertaN;
+      const prevPos = prev === undefined ? pos : (i - prev + ofertaN) % ofertaN;
+      const wrapped = Math.abs(pos - prevPos) > 1;       // da la vuelta al final de la fila
+      const visible = pos < CARDS_VISIBLE;
+      // Si la tarjeta da la vuelta, no se desliza de punta a punta: solo se desvanece/aparece.
+      card.style.transition = wrapped ? 'height .3s ease-in-out .2s, opacity .3s ease' : '';
+      card.style.left = (pos * (CARD_W + CARD_GAP)) + 'px';
+      card.style.opacity = visible ? '1' : '0';
+      card.style.pointerEvents = visible ? '' : 'none';
+      card.classList.toggle('is-active', pos === 0);
+      card.firstElementChild.tabIndex = visible ? 0 : -1;
+    });
   }
-  buildCardStack();
+  layoutCardStack();
   ofertaCta.href = ofertaSlides[0].url;
 
   function goOferta(idx) {
     if (ofertaAnimating || idx === ofertaActive) return;
     ofertaAnimating = true;
+    const prevActive = ofertaActive;
     ofertaActive = idx;
     const s = ofertaSlides[idx];
 
@@ -2382,15 +2398,38 @@
       const target = activeThumb.offsetLeft - (ofertaMobThumbs.clientWidth - activeThumb.offsetWidth) / 2;
       ofertaMobThumbs.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
     }
-    buildCardStack();
+    layoutCardStack(prevActive);
 
-    setTimeout(() => { ofertaAnimating = false; }, 550);
+    setTimeout(() => { ofertaAnimating = false; pumpOferta(); }, 550);
   }
 
+  /* Meta del scroll: la oferta a la que "le toca" estar según dónde esté el scroll.
+     Si el usuario avanza muy rápido, la oferta visible NO salta de golpe a la meta:
+     se avanza de una en una (cada una con su transición completa) hasta alcanzarla. */
+  let ofertaTarget = 0;
+  function pumpOferta() {
+    if (ofertaAnimating || ofertaActive === ofertaTarget) return;
+    goOferta(ofertaActive + Math.sign(ofertaTarget - ofertaActive));
+  }
+
+  /* Zona (0..n-1) que corresponde a `raw` (0..n) con una pequeña zona muerta en los
+     bordes, para que no parpadee entre dos ofertas al detenerse justo en el límite. */
+  function zoneWithDeadBand(raw, current, n) {
+    const H = 0.08;
+    let z = Math.min(n - 1, Math.floor(raw));
+    if (z > current && raw < z + H) z = Math.max(current, z - 1);
+    else if (z < current && raw > z + 1 - H) z = Math.min(current, z + 1);
+    return z;
+  }
+
+  /* Scroll disponible mientras la sección está fija: alto del riel menos el alto
+     real de la pantalla fija (más exacto que innerHeight en móviles con barra). */
+  const ofertaScrollable = () => ofertaTrack.offsetHeight - ofertaSticky.offsetHeight;
+
   function goOfertaTo(idx) {
-    if (!ofertaScrollDriven) { goOferta(idx); return; }
-    const total = ofertaTrack.offsetHeight - window.innerHeight;
-    if (total <= 0) { goOferta(idx); return; }
+    if (!ofertaScrollDriven) { ofertaTarget = idx; goOferta(idx); return; }
+    const total = ofertaScrollable();
+    if (total <= 0) { ofertaTarget = idx; goOferta(idx); return; }
     const trackTop = ofertaTrack.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
       top: Math.round(trackTop + total * ((idx + 0.5) / ofertaN)),
@@ -2415,10 +2454,11 @@
   function readOfertaScroll() {
     ofertaTicking = false;
     if (!ofertaScrollDriven) return;
-    const total = ofertaTrack.offsetHeight - window.innerHeight;
+    const total = ofertaScrollable();
     if (total <= 0) return;
     const progress = Math.min(Math.max(-ofertaTrack.getBoundingClientRect().top / total, 0), 1);
-    goOferta(Math.min(ofertaN - 1, Math.floor(progress * ofertaN)));
+    ofertaTarget = zoneWithDeadBand(progress * ofertaN, ofertaTarget, ofertaN);
+    pumpOferta();
   }
   function onOfertaScroll() {
     if (!ofertaTicking) { ofertaTicking = true; requestAnimationFrame(readOfertaScroll); }
@@ -2426,6 +2466,7 @@
   function measureOferta() {
     ofertaScrollDriven = !ofertaReduceMotion.matches;
     ofertaSection.classList.toggle('is-static', !ofertaScrollDriven);
+    if (!ofertaScrollDriven) ofertaTarget = ofertaActive;
     readOfertaScroll();
   }
   let ofertaResizeTimer;
@@ -2523,10 +2564,21 @@
 
   /* Ir a un testimonio = desplazar el scroll al punto medio de su tramo.
      En modo estático o con movimiento reducido, se activa sin mover nada. */
+  /* Igual que en Oferta: el testimonio visible avanza de uno en uno hacia la
+     meta que marca el scroll (no salta varios de golpe si se desplaza rápido). */
+  let testTarget = 0, testPumping = false;
+  function pumpTest() {
+    if (testPumping || testActive === testTarget) return;
+    setActive(testActive + Math.sign(testTarget - testActive));
+    testPumping = true;
+    setTimeout(() => { testPumping = false; pumpTest(); }, 450);
+  }
+  const testScrollable = () => testTrack.offsetHeight - testSticky.offsetHeight;
+
   function goTest(i) {
-    if (!scrollDriven) { setActive(i); return; }
-    const total = testTrack.offsetHeight - window.innerHeight;
-    if (total <= 0) { setActive(i); return; }
+    if (!scrollDriven) { testTarget = i; setActive(i); return; }
+    const total = testScrollable();
+    if (total <= 0) { testTarget = i; setActive(i); return; }
     const trackTop = testTrack.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
       top: Math.round(trackTop + total * ((i + 0.5) / N)),
@@ -2538,10 +2590,11 @@
   function readScroll() {
     ticking = false;
     if (!scrollDriven) return;
-    const total = testTrack.offsetHeight - window.innerHeight;
+    const total = testScrollable();
     if (total <= 0) return;
     const progress = Math.min(Math.max(-testTrack.getBoundingClientRect().top / total, 0), 1);
-    setActive(Math.min(N - 1, Math.floor(progress * N)));
+    testTarget = zoneWithDeadBand(progress * N, testTarget, N);
+    pumpTest();
   }
   function onTestScroll() {
     if (!ticking) { ticking = true; requestAnimationFrame(readScroll); }
@@ -2585,6 +2638,7 @@
     if (!scrollDriven) {                                  // lista estática: texto completo
       testSection.classList.add('is-static');
       testSection.style.setProperty('--test-lines', 'none');
+      testTarget = testActive;
     }
     readScroll();
   }

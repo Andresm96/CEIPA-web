@@ -109,6 +109,9 @@
       transition: color .2s;
     }
     .nav-item > button:hover { color: var(--blue); }
+    /* Elemento del menú sin desplegable (enlace directo) */
+    .nav-item > .nav-link { font-size: 16px; color: #111; white-space: nowrap; transition: color .2s; }
+    .nav-item > .nav-link:hover { color: var(--blue); }
     .nav-item > button svg { transition: transform .2s; }
     .nav-item:hover > button svg { transform: rotate(180deg); }
     .nav-dropdown {
@@ -278,7 +281,7 @@
 
     .hero-content {
       position: relative; z-index: 2;
-      padding: 92px 24px 56px;
+      padding: 76px 24px 56px;   /* móvil: título más cerca del menú (desktop usa 128px) */
       max-width: 1440px; margin: 0 auto;
     }
     .hero-text-wrap { width: 100%; }
@@ -305,7 +308,12 @@
       border-radius: 100px; transition: transform .3s, background .3s, color .3s, border-color .3s;
       border: 1px solid var(--blue); background: transparent; color: var(--text-dark);
     }
-    .hero-cta:hover { transform: scale(1.03); }
+    /* Hover: fondo azul de marca y texto blanco (el JS fija color/borde en línea,
+       por eso !important) */
+    .hero-cta:hover {
+      transform: scale(1.03);
+      background: var(--blue) !important; border-color: var(--blue) !important; color: #fff !important;
+    }
     .hero-cta.glass {
       background: rgba(255,255,255,.15); backdrop-filter: blur(14px);
       border: 1px solid rgba(255,255,255,.55); color: #fff;
@@ -356,6 +364,7 @@
 
     /* ─── FORM SECTION ─────────────────────────────────────── */
     #form-section {
+      scroll-margin-top: 88px;   /* al llegar por ancla, el menú fijo no tapa el título */
       max-width: 1440px; margin: 0 auto;
       padding: 64px 24px;
     }
@@ -442,11 +451,6 @@
     }
     .form-legal span { text-decoration: underline; }
 
-    .form-success { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 320px; }
-    .form-success.show { display: flex; }
-    .form-success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .form-success h4 { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
-    .form-success p { font-size: 16px; color: #444; max-width: 360px; font-family: 'Archivo', sans-serif; font-weight: 200; }
 
     @media (min-width: 1024px) {
       .form-wrap { flex-direction: row; }
@@ -599,7 +603,12 @@
       .oferta-mob-thumbs { display: none; }
       .oferta-right { display: flex; width: 50%; }
     }
-    @media (max-width: 767px) { #oferta { --oferta-step: 100; } }
+    @media (max-width: 767px) {
+      #oferta { --oferta-step: 100; }
+      /* Móvil: contenido centrado en la pantalla (antes quedaba arriba con mucho
+         espacio vacío abajo) */
+      .oferta-body { justify-content: center; }
+    }
     @media (min-width: 1024px) { #oferta { --oferta-step: 120; } }
 
     /* Static mode (reduced motion or content that doesn't fit): no pinning. */
@@ -1031,12 +1040,12 @@
     }
     .btn-filled {
       display: inline-block;
-      background: var(--text-dark); color: #fff;
+      background: var(--blue); color: #fff;   /* azul real de marca #354EE7 */
       font-size: 14px; font-weight: 600; padding: 10px 24px;
       border-radius: 100px;
       transition: background .3s;
     }
-    .btn-filled:hover { background: var(--blue); }
+    .btn-filled:hover { background: var(--blue-dark); }
 
     @media (min-width: 1024px) {
       #financiacion { padding: 64px 64px; }
@@ -1408,11 +1417,9 @@
           <a href="#">Financiación</a>
         </div>
       </div>
+      <!-- Estudiantes: enlace directo, sin desplegable. PENDIENTE: URL de servicios para estudiantes -->
       <div class="nav-item">
-        <button>Estudiantes <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
-        <div class="nav-dropdown">
-          <a href="#">Servicios e información para estudiantes</a>
-        </div>
+        <a href="#" class="nav-link">Estudiantes</a>
       </div>
       <div class="nav-item">
         <button>CEIPA <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
@@ -1499,10 +1506,7 @@
         </div>
       </div>
       <div class="mob-item">
-        <button class="mob-link-btn" data-target="sub-estudiantes">Estudiantes <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
-        <div class="mob-sub" id="sub-estudiantes">
-          <a href="#">Servicios e información para estudiantes</a>
-        </div>
+        <a href="#" class="mob-link-btn">Estudiantes</a>
       </div>
       <div class="mob-item">
         <button class="mob-link-btn" data-target="sub-ceipa">CEIPA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></button>
@@ -1559,8 +1563,8 @@
 <!-- ─── HERO (foto de fondo completa · carrusel) ────────── -->
 <section id="hero">
   <!-- Fondos — crossfade por slide, JS alterna la clase .active -->
-  <img src="src/imports/hero-slide2-aula-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile hero-bg--low" data-slide="1" />
-  <img src="src/imports/hero-slide2-aula-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top" data-slide="1" />
+  <img src="src/imports/hero-slide2-aula-v2-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile hero-bg--low" data-slide="1" />
+  <img src="src/imports/hero-slide2-aula-v2-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop hero-bg--top" data-slide="1" />
   <img src="src/imports/hero-slide3-claro-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile" data-slide="2" />
   <img src="src/imports/hero-slide3-claro-desktop.webp" alt="" aria-hidden class="hero-bg hero-bg-desktop" data-slide="2" />
   <img src="src/imports/hero-slide4-franjas-mobile.webp" alt="" aria-hidden class="hero-bg hero-bg-mobile active" data-slide="0" />
@@ -1644,14 +1648,6 @@
         </div>
 
         <p class="form-legal">Al enviar acepta los términos de uso. Lee aquí las <span>Política de Tratamiento y Protección de datos y Habeas Data</span></p>
-      </div>
-
-      <div class="form-success" id="form-success">
-        <div class="form-success-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        </div>
-        <h4>¡Gracias, <span id="form-success-name"></span>!</h4>
-        <p>Hemos recibido tu información. Un asesor de CEIPA se pondrá en contacto contigo pronto.</p>
       </div>
     </div>
   </div>
@@ -1801,7 +1797,7 @@
   </div>
   <div class="novedades-grid">
     <div class="novedad-card reveal delay-100">
-      <div class="novedad-img"><img src="src/imports/novedades/novedad-acreditacion-internacional.webp" alt="Novedad 1" /></div>
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-acreditacion-v2.webp" alt="Directivos de CEIPA sonríen en el campus" /></div>
       <div class="novedad-body">
         <span class="novedad-tag">Académico</span>
         <p class="novedad-title">CEIPA obtiene acreditación internacional de alta calidad</p>
@@ -1813,7 +1809,7 @@
       </div>
     </div>
     <div class="novedad-card reveal delay-200">
-      <div class="novedad-img"><img src="src/imports/novedades/novedad-feria-emprendimiento.webp" alt="Novedad 2" /></div>
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-feria-v2.webp" alt="Estudiantes presentan su emprendimiento en un stand de la feria" /></div>
       <div class="novedad-body">
         <span class="novedad-tag">Eventos</span>
         <p class="novedad-title">Feria de Emprendimiento CEIPA 2026: inscripciones abiertas</p>
@@ -1825,7 +1821,7 @@
       </div>
     </div>
     <div class="novedad-card reveal delay-300">
-      <div class="novedad-img"><img src="src/imports/novedades/novedad-concurso-innovacion.webp" alt="Novedad 3" /></div>
+      <div class="novedad-img"><img src="src/imports/novedades/novedad-concurso-v2.webp" alt="Estudiantes celebran junto al robot con el que ganaron el concurso" /></div>
       <div class="novedad-body">
         <span class="novedad-tag">Investigación</span>
         <p class="novedad-title">Estudiantes CEIPA ganan primer lugar en concurso nacional de innovación</p>
@@ -1932,7 +1928,7 @@
     <div class="cta-content">
       <p class="cta-title">¿Listo para dar el siguiente paso?</p>
       <p class="cta-desc">Inicia hoy tu proceso de admisión y da el primer paso hacia la carrera que quieres. Nuestros asesores te acompañan en cada momento del camino.</p>
-      <a href="#" class="btn-cta">¡Matricúlate ahora!</a>
+      <a href="#form-section" class="btn-cta">¡Matricúlate ahora!</a>
     </div>
   </div>
 </section>
@@ -2034,9 +2030,6 @@
     const backBtn = document.getElementById('form-back');
     const nextBtn = document.getElementById('form-next');
     const submitBtn = document.getElementById('form-submit');
-    const stepView = document.getElementById('form-step-view');
-    const successView = document.getElementById('form-success');
-    const successName = document.getElementById('form-success-name');
     const icfesSiBtn = document.getElementById('icfes-si');
     const icfesNoBtn = document.getElementById('icfes-no');
     const icfesWarning = document.getElementById('icfes-warning');
@@ -2106,9 +2099,7 @@
     });
     submitBtn.addEventListener('click', () => {
       if (!canNext()) return;
-      successName.textContent = fields.nombre.value.trim();
-      stepView.style.display = 'none';
-      successView.classList.add('show');
+      window.location.href = 'gracias.html';   // página de gracias genérica (ejemplo)
     });
 
     render();
@@ -2123,7 +2114,7 @@
   });
 
   /* ── Mobile sub-menus ──────────────────────────────── */
-  document.querySelectorAll('.mob-link-btn').forEach(btn => {
+  document.querySelectorAll('.mob-link-btn[data-target]').forEach(btn => {   // solo los que despliegan
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-target');
       const sub = document.getElementById(targetId);
@@ -2166,7 +2157,7 @@
       overlayMobile: 'linear-gradient(to bottom, rgba(255,255,255,.35) 0%, rgba(255,255,255,.35) 40%, transparent 55%)',
     },
     {
-      prefix: 'Estudia en CEIPA: ', highlight: 'donde aprendes haciendo desde el primer día.',
+      prefix: 'Donde aprendes ', highlight: 'haciendo desde el primer día.',
       desc: 'Una formación conectada con el mundo empresarial, diseñada para convertir el conocimiento en experiencia.',
       dark: false, glassBtn: false,
       overlay: 'linear-gradient(to right, rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 60%, transparent 100%)',
@@ -2233,37 +2224,17 @@
   buildHeroDots();
   goHero(0);
   setInterval(() => goHero((heroActive + 1) % heroSlides.length), 4000);
-
-  /* Móvil: el bloque del título reserva el alto del título más largo, para que
-     párrafo, botón y puntos no salten al cambiar de slide (desktop ya usa un
-     alto fijo por CSS). Se recalcula al cargar fuentes y al cambiar el ancho. */
-  const heroClip = document.querySelector('.hero-title-clip');
-  const heroTitle = document.getElementById('hero-title');
-  function measureHeroTitle() {
-    heroClip.style.minHeight = '';
-    if (window.innerWidth >= 768) return;
-    const cur = [heroPrefix.textContent, heroHighlight.textContent];
-    let max = 0;
-    heroSlides.forEach(s => {
-      heroPrefix.textContent = s.prefix; heroHighlight.textContent = s.highlight;
-      max = Math.max(max, heroTitle.offsetHeight);
-    });
-    [heroPrefix.textContent, heroHighlight.textContent] = cur;
-    heroClip.style.minHeight = max + 'px';
-  }
-  measureHeroTitle();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureHeroTitle);
-  let heroResizeTimer;
-  window.addEventListener('resize', () => { clearTimeout(heroResizeTimer); heroResizeTimer = setTimeout(measureHeroTitle, 150); });
+  /* Móvil: el título va siempre justo bajo el menú (sin reservar el alto del
+     título más largo), para que el texto no quede sobre la persona de la foto. */
 
   /* ── OFERTA ACADÉMICA (tarjetas apiladas · dirigido por scroll) ── */
   const ofertaSlides = [
-    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-v2-bg.webp', card: 'src/imports/oferta-tecnicas-v2-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
+    { title: 'Técnicas Laborales', tag: 'Formación Técnica', desc: 'Programas técnicos con alta empleabilidad para quienes quieren iniciar su carrera profesional rápidamente.', bg: 'src/imports/oferta-tecnicas-v4-bg.webp', card: 'src/imports/oferta-tecnicas-v4-card.webp', url: 'https://ceipa.edu.co/tecnico/' },
     { title: 'Pregrados', tag: 'Presencial & Virtual', desc: 'Programas presenciales y virtuales diseñados para el mundo real, con enfoque empresarial desde el primer semestre.', bg: 'src/imports/oferta-pregrados-v3-bg.webp', card: 'src/imports/oferta-pregrados-v3-card.webp', url: 'https://ceipa.edu.co/carreras-profesionales/' },
     { title: 'Posgrados', tag: 'Especialización', desc: 'Especializaciones con enfoque en innovación empresarial para profesionales que buscan ir más lejos en su carrera.', bg: 'src/imports/oferta-posgrados-v3-bg.webp', card: 'src/imports/oferta-posgrados-v3-card.webp', url: 'https://ceipa.edu.co/especializaciones/' },
-    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-v3-bg.webp', card: 'src/imports/oferta-maestrias-v3-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
-    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-v3-bg.webp', card: 'src/imports/oferta-educontinua-v3-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
-    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-v2-bg.webp', card: 'src/imports/oferta-idiomas-v2-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
+    { title: 'Maestrías', tag: 'Alta Especialización', desc: 'Lleva tu carrera al siguiente nivel con programas de maestría enfocados en investigación y liderazgo estratégico.', bg: 'src/imports/oferta-maestrias-v4-bg.webp', card: 'src/imports/oferta-maestrias-v4-card.webp', url: 'https://ceipa.edu.co/maestrias/' },
+    { title: 'Educación continua', tag: 'Cursos & Diplomados', desc: 'Cursos y diplomados para profesionales en constante evolución, con horarios flexibles y modalidad virtual.', bg: 'src/imports/oferta-educontinua-v4-bg.webp', card: 'src/imports/oferta-educontinua-v4-card.webp', url: 'https://educacioncontinua.ceipa.edu.co/' },
+    { title: 'Centro de Idiomas', tag: 'Inglés & Bilingüismo', desc: 'Programas de inglés y segundas lenguas para potenciar tu perfil profesional y abrirte puertas a nivel global.', bg: 'src/imports/oferta-idiomas-v3-bg.webp', card: 'src/imports/oferta-idiomas-v3-card.webp', url: 'https://ceipa.edu.co/centro-de-idiomas/' },
   ];
   let ofertaActive = 0, ofertaAnimating = false;
   const ofertaSection   = document.getElementById('oferta');

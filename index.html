@@ -487,13 +487,17 @@
     .oferta-bg-layer.active { opacity: 1; }
     .oferta-bg-layer img {
       width: 100%; height: 100%; object-fit: cover;
-      filter: blur(8px); transform: scale(1.1);
+      filter: blur(5px); transform: scale(1.1);   /* desenfoque suave (antes 8px) */
       transition: transform 1s ease-in-out;
     }
     .oferta-bg-layer.active img { transform: scale(1.04); }
     .oferta-gradient {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
-      background: linear-gradient(150deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.38) 50%, rgba(30,30,30,.15) 100%);
+      /* Velo suave en varios pasos: oscurece solo lo necesario detrás del texto
+         (izquierda) y se desvanece de forma gradual hacia la derecha. */
+      background: linear-gradient(110deg,
+        rgba(6,13,55,.58) 0%, rgba(6,13,55,.46) 22%, rgba(6,13,55,.30) 42%,
+        rgba(6,13,55,.16) 62%, rgba(6,13,55,.06) 82%, rgba(6,13,55,0) 100%);
     }
     .oferta-body {
       position: relative; z-index: 2;
@@ -731,6 +735,17 @@
     /* Puntos: la pastilla visible mide 4px de alto, pero el <button> ocupa
        44px para cumplir el tamaño mínimo de objetivo táctil (WCAG 2.5.8). */
     .test-dots { display: flex; gap: 12px; margin-top: 12px; }
+    /* Flechas de testimonios (azul de marca, contorno) */
+    .test-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .test-arrows { display: flex; gap: 10px; margin-top: 12px; }
+    .test-arrow {
+      width: 44px; height: 44px; border-radius: 100px;
+      border: 1px solid var(--blue); background: #fff; color: var(--blue);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: background .25s, color .25s, transform .25s;
+    }
+    .test-arrow:hover { background: var(--blue); color: #fff; transform: scale(1.05); }
+    .test-arrow:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
     .test-dot {
       position: relative;
       width: 16px; height: 44px;
@@ -1736,7 +1751,17 @@
           <p class="test-counter" aria-hidden="true">
             <span id="test-counter-now">01</span><span class="test-counter-sep">/</span><span id="test-counter-total">03</span>
           </p>
-          <div class="test-dots" id="test-dots" role="group" aria-label="Ir a un testimonio"></div>
+          <div class="test-nav">
+            <div class="test-dots" id="test-dots" role="group" aria-label="Ir a un testimonio"></div>
+            <div class="test-arrows">
+              <button type="button" class="test-arrow" id="test-prev" aria-label="Testimonio anterior">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button type="button" class="test-arrow" id="test-next" aria-label="Siguiente testimonio">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
           <p class="test-hint" id="test-hint" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
             Desplázate para ver más
@@ -2435,7 +2460,9 @@
     if (!ofertaTicking) { ofertaTicking = true; requestAnimationFrame(readOfertaScroll); }
   }
   function measureOferta() {
-    ofertaScrollDriven = !ofertaReduceMotion.matches;
+    /* Navegación SIN scroll: la sección queda fija en su lugar y se recorre con
+       las flechas, los puntos y las miniaturas (modo .is-static). */
+    ofertaScrollDriven = false;
     ofertaSection.classList.toggle('is-static', !ofertaScrollDriven);
     if (!ofertaScrollDriven) ofertaTarget = ofertaActive;
     readOfertaScroll();
@@ -2605,7 +2632,8 @@
     }
     testSection.classList.remove('is-measuring');
     cards.forEach((c, i) => c.classList.toggle('is-active', i === prev));
-    scrollDriven = fits && !reduceMotion.matches;
+    /* Navegación SIN scroll: se recorre con las flechas y los puntos. */
+    scrollDriven = false;
     if (!scrollDriven) {                                  // lista estática: texto completo
       testSection.classList.add('is-static');
       testSection.style.setProperty('--test-lines', 'none');
@@ -2619,6 +2647,9 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(measureTest, 150);
   }
+
+  document.getElementById('test-prev').addEventListener('click', () => goTest((testActive - 1 + N) % N));
+  document.getElementById('test-next').addEventListener('click', () => goTest((testActive + 1) % N));
 
   setActive(0);
   measureTest();

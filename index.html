@@ -486,7 +486,10 @@
     }
     .oferta-bg-layer.active { opacity: 1; }
     .oferta-bg-layer img {
-      width: 100%; height: 100%; object-fit: cover;
+      /* La imagen sobresale 40px por cada lado: así el desenfoque no deja
+         un borde difuminado/blanquecino arriba de la sección. */
+      position: absolute; top: -40px; left: -40px;
+      width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover;
       filter: blur(5px); transform: scale(1.1);   /* desenfoque suave (antes 8px) */
       transition: transform 1s ease-in-out;
     }

@@ -481,7 +481,7 @@
     }
     @supports (min-height: 100svh) { .oferta-sticky { min-height: 100svh; } }
     .oferta-bg-layer {
-      position: absolute; inset: 0; z-index: 0;
+      position: absolute; inset: 0; z-index: 0; overflow: hidden;
       opacity: 0; transition: opacity .5s linear;
     }
     .oferta-bg-layer.active { opacity: 1; }
